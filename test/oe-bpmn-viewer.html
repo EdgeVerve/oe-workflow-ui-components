@@ -172,9 +172,10 @@
       });
       bpmnViewer.addEventListener('oe-bpmn-viewer-loaded', function(e){        
         var canvas = bpmnViewer.viewer.get('canvas');
-        var scriptOverlay = bpmnViewer.querySelector('[data-container-id="ServiceTask_xml1"] oe-processtoken-panel');
+        var scriptOverlay = bpmnViewer.shadowRoot.querySelector('oe-processtoken-panel');
         expect(scriptOverlay,'Overlay element not created').to.be.ok;
         scriptOverlay._rerun();
+        done();
       });
       bpmnViewer.set('bpmnXml', xml1);
     });
