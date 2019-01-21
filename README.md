@@ -1,4 +1,4 @@
-# \<oe-workflow-manager\>
+# \<oe-workflow-ui-components\>
 
 
 
