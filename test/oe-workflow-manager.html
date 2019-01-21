@@ -1,0 +1,128 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<!doctype html>
+
+<html>
+
+<head>
+
+    <title>oe-workflow-dashboard tests</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+    <script src="../node_modules/sinon/pkg/sinon.js"></script>
+    <script type="module" src="../oe-workflow-manager.js"></script>
+<script>
+    var data = [
+        {
+            "engineType": "oe-workflow",
+            "workflowBody": {
+                "workflowDefinitionName": "LoanApplication"
+            },
+            "modelName": "LoanApplication",
+            "actualModelName": "LoanApplication",
+            "operation": "create",
+            "version": "v2",
+            "wfDependent": true,
+            "makersRecall": false,
+            "privilegedUsers": [],
+            "privilegedRoles": [],
+            "id": "5c3c276e05217a2f8c73c32a",
+            "_isDeleted": false,
+            "_version": "4a3b59c5-828c-48b1-9dd1-2b060b79a6ce"
+        },
+        {
+            "engineType": "oe-workflow",
+            "workflowBody": {
+                "workflowDefinitionName": "TestApplication"
+            },
+            "modelName": "TestApplication",
+            "actualModelName": "TestApplication",
+            "operation": "update",
+            "version": "v4",
+            "wfDependent": true,
+            "makersRecall": false,
+            "privilegedUsers": [],
+            "privilegedRoles": [],
+            "id": "5c3c276e05217a2f8c73c32a",
+            "_isDeleted": false,
+            "_version": "4a3b59c5-828c-48b1-9dd1-2b060b79a6ce"
+        }
+    ]
+</script>
+</head>
+<body>
+
+    <test-fixture id="BasicFixture">
+        <template>
+            <oe-workflow-dashboard></oe-workflow-dashboard>
+        </template>
+    </test-fixture>
+    <test-fixture id="Manager">
+            <template>
+                <oe-workflow-manager></oe-workflow-manager>
+            </template>
+        </test-fixture>
+
+    <script type="module">
+        import { DomApi } from "@polymer/polymer/lib/legacy/polymer.dom";
+        import '@polymer/iron-test-helpers/test-helpers.js';
+        import '@polymer/iron-test-helpers/mock-interactions.js';
+
+        suite('Workflow Definition', function () {
+            test('Number of data-table items similar to data recieved from ajax call', function (done) {
+                var ele = fixture('Manager');
+                var flag=false;
+                ele.set('workflowManger', data);
+                setTimeout(function () {
+                    
+                    var table = ele.shadowRoot.querySelector('oe-data-table');
+                    flush(function () {
+                        expect(table.items.length).to.be.equal(ele.workflowManger.length);
+                        done();
+                    });
+                },1000);
+                   
+                    
+            });
+            test('On on-tap of row details is fired having workflow manager details of workflow', function (done) {
+                var ele = fixture('Manager');
+                var flag=false;
+                ele.set('workflowManger', data);
+                setTimeout(function () {
+                    
+                    var table = ele.shadowRoot.querySelector('oe-data-table');
+                    var row = table.shadowRoot.querySelector('oe-data-table-row');
+                    var rowaction = row.shadowRoot.querySelector('paper-icon-button.row-action')
+                    
+                    rowaction.click();
+                    ele.addEventListener('oe-workflow-mapping',function(evt){
+                        
+                        if(evt.detail.id){
+                           flag = true;
+                        }
+                        assert.isTrue(flag);
+                        done();
+                    });
+               
+                   
+                },1000);
+                   
+                    
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>
+

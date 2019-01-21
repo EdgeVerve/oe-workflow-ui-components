@@ -1,0 +1,81 @@
+<!--
+  Â©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <title>oe-workflow-manager</title>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script type="module">
+            import '@polymer/iron-demo-helpers/demo-pages-shared-styles';
+            import '@polymer/iron-demo-helpers/demo-snippet'; 
+            import '@polymer/polymer/lib/elements/dom-bind.js';
+            import '../oe-workflow-manager.js';
+          </script>
+        
+</head>
+<script>
+    var data = [
+        {
+            "engineType": "oe-workflow",
+            "workflowBody": {
+                "workflowDefinitionName": "LoanApplication"
+            },
+            "modelName": "LoanApplication",
+            "actualModelName": "LoanApplication",
+            "operation": "create",
+            "version": "v2",
+            "wfDependent": true,
+            "makersRecall": false,
+            "privilegedUsers": [],
+            "privilegedRoles": [],
+            "id": "5c3c276e05217a2f8c73c32a",
+            "_isDeleted": false,
+            "_version": "4a3b59c5-828c-48b1-9dd1-2b060b79a6ce"
+        },
+        {
+            "engineType": "oe-workflow",
+            "workflowBody": {
+                "workflowDefinitionName": "TestApplication"
+            },
+            "modelName": "TestApplication",
+            "actualModelName": "TestApplication",
+            "operation": "update",
+            "version": "v4",
+            "wfDependent": true,
+            "makersRecall": false,
+            "privilegedUsers": [],
+            "privilegedRoles": [],
+            "id": "5c3c276e05217a2f8c73c32a",
+            "_isDeleted": false,
+            "_version": "4a3b59c5-828c-48b1-9dd1-2b060b79a6ce"
+        }
+    ]
+</script>
+
+<body unresolved>
+    <div class="vertical-section-container centered">
+        <h3>Workflow Manager </h3>
+        <demo-snippet id="snippet">
+            <template>
+                <oe-workflow-manager id="manager-1"></oe-workflow-manager>
+                <script>
+                    setTimeout(function () {
+                        
+                        var workflow = document.querySelector('#manager-1');
+                        
+                        workflow.set('workflowManger', data);
+                    }, 2000);
+
+                </script>
+            </template>
+        </demo-snippet>
+    </div>
+</body>
+
+</html>
