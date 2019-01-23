@@ -77,16 +77,14 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
           </div>
           </paper-item>
           <iron-collapse id="collapse" data-collapse-def-id$=[[workflow.id]]>
-            <template is="dom-repeat" items="{{workflow.workflowInstances}}" as="instance">
+            <template is="dom-repeat" items="{{_checkProcess(workflow.name,workflow.workflowInstances)}}" as="process">
               <div class="block pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
-                <template is="dom-if" if=[[_checkProcess(workflow.name,instance.processes)]]>
-                    <oe-info label="Instance Id" value={{instance.id}}></oe-info>
+                    <oe-info label="Instance Id" value={{process._inst}}></oe-info>
                     <oe-info label="Status" value={{process._status}}></oe-info>
                     <oe-info label="StartTime" type="timestamp" value={{_getTime(process._processTokens)}}></oe-info>
                     <oe-info label="Process Id" value={{process.id}}></oe-info>
                     <template is="dom-if" if=[[_checkSatusPending(process._status)]]>
                     <oe-info label="EndTime" type="timestamp" value={{_getEndTime(process._processTokens)}}></oe-info>
-                    </template>
                     <template is="dom-if" if=[[_getErrorMessage(process._processTokens,process._status)]]>
                       <oe-info label="Error" value={{_getErrorMessage(process._processTokens)}}></oe-info>
                     </template>
@@ -121,12 +119,6 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         value: function () {
           return [];
         }
-      },
-      /**
-       * Object which holds primary process.
-       */
-      process: {
-        type: Object
       },
       /**
        * String holds the error message of failed process.
@@ -187,7 +179,8 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    */
   _instanceClick(event) {
     this.async(function () {
-      this.fire('oe-workflow-instance',event.model.instance);
+      debugger
+      this.fire('oe-workflow-instance',event.model.process);
   });
 
   }
@@ -216,20 +209,18 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @param {Array} processInstance Array Processes of workflow Instance. 
    * @return {boolean} .
    */
-  _checkProcess(name, processInstance) {
+  _checkProcess(name, workflowInst) {
     var self = this;
-    processInstance.forEach(function (proc) {
-      if (name == proc.processDefinitionName) {
-        self.process = proc;
-      }
-
+    var completeProcess=[];
+    workflowInst.forEach(function (instance) {
+      instance.processes.forEach(function (proc) {
+        if (proc.processDefinitionName === name) {
+          proc._inst = instance.id;
+          completeProcess.push(proc);
+        }
+      });
     });
-    if (self.process) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    return completeProcess;
   }
   /**
    * Method invoked on-tap event on workflow definintion name.
