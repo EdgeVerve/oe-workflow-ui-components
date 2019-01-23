@@ -1,0 +1,187 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<!doctype html>
+
+<html>
+
+<head>
+
+  <title>oe-bpmn-viewer tests</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+  <script src="../node_modules/sinon/pkg/sinon.js"></script>
+  <script type="module" src="../oe-bpmn-viewer.js"></script>
+
+  <script>
+    var xml1 = '<?xml version="1.0" encoding="UTF-8"?><bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"><bpmn2:process id="Process_1" isExecutable="false"><bpmn2:startEvent id="StartEvent_1" name="Start"><bpmn2:outgoing>SequenceFlow_0zwlwib</bpmn2:outgoing></bpmn2:startEvent><bpmn2:sequenceFlow id="SequenceFlow_0zwlwib" sourceRef="StartEvent_1" targetRef="UserTask_xml1" /><bpmn2:endEvent id="EndEvent_0ad1ojk" name="End"><bpmn2:incoming>SequenceFlow_004lsd9</bpmn2:incoming></bpmn2:endEvent><bpmn2:sequenceFlow id="SequenceFlow_0lmc7gk" sourceRef="UserTask_xml1" targetRef="ServiceTask_xml1" /><bpmn2:userTask id="UserTask_xml1" name="Approval"><bpmn2:incoming>SequenceFlow_0zwlwib</bpmn2:incoming><bpmn2:outgoing>SequenceFlow_0lmc7gk</bpmn2:outgoing></bpmn2:userTask><bpmn2:sequenceFlow id="SequenceFlow_004lsd9" sourceRef="ServiceTask_xml1" targetRef="EndEvent_0ad1ojk" /><bpmn2:serviceTask id="ServiceTask_xml1" name="Remote Call"><bpmn2:incoming>SequenceFlow_0lmc7gk</bpmn2:incoming><bpmn2:outgoing>SequenceFlow_004lsd9</bpmn2:outgoing></bpmn2:serviceTask></bpmn2:process><bpmndi:BPMNDiagram id="BPMNDiagram_1"><bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1"><bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1"><dc:Bounds x="412" y="240" width="36" height="36" /></bpmndi:BPMNShape><bpmndi:BPMNEdge id="SequenceFlow_0zwlwib_di" bpmnElement="SequenceFlow_0zwlwib"><di:waypoint xsi:type="dc:Point" x="448" y="258" /><di:waypoint xsi:type="dc:Point" x="479" y="258" /><bpmndi:BPMNLabel><dc:Bounds x="418.5" y="233" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNShape id="EndEvent_0ad1ojk_di" bpmnElement="EndEvent_0ad1ojk"><dc:Bounds x="772" y="240" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="745" y="276" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNEdge id="SequenceFlow_0lmc7gk_di" bpmnElement="SequenceFlow_0lmc7gk"><di:waypoint xsi:type="dc:Point" x="579" y="258" /><di:waypoint xsi:type="dc:Point" x="608" y="258" /><bpmndi:BPMNLabel><dc:Bounds x="574" y="233" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNShape id="UserTask_xml1_di" bpmnElement="UserTask_xml1"><dc:Bounds x="479" y="218" width="100" height="80" /></bpmndi:BPMNShape><bpmndi:BPMNEdge id="SequenceFlow_004lsd9_di" bpmnElement="SequenceFlow_004lsd9"><di:waypoint xsi:type="dc:Point" x="708" y="258" /><di:waypoint xsi:type="dc:Point" x="737" y="258" /><di:waypoint xsi:type="dc:Point" x="737" y="258" /><di:waypoint xsi:type="dc:Point" x="772" y="258" /><bpmndi:BPMNLabel><dc:Bounds x="629" y="248" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNShape id="ServiceTask_xml1_di" bpmnElement="ServiceTask_xml1"><dc:Bounds x="608" y="218" width="100" height="80" /></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn2:definitions>';
+    var xml2 = '<?xml version="1.0" encoding="UTF-8"?><bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"><bpmn2:process id="Process_1" isExecutable="false"><bpmn2:startEvent id="StartEvent_1" name="Start"><bpmn2:outgoing>SequenceFlow_0irgyw4</bpmn2:outgoing></bpmn2:startEvent><bpmn2:endEvent id="EndEvent_0ad1ojk" name="End"><bpmn2:incoming>SequenceFlow_04yy7o0</bpmn2:incoming></bpmn2:endEvent><bpmn2:exclusiveGateway id="ExclusiveGateway_xml2" name="XGateway"><bpmn2:incoming>SequenceFlow_0irgyw4</bpmn2:incoming><bpmn2:outgoing>SequenceFlow_0283f4q</bpmn2:outgoing></bpmn2:exclusiveGateway><bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_xml2" name="ThrowEvent"><bpmn2:incoming>SequenceFlow_0283f4q</bpmn2:incoming><bpmn2:outgoing>SequenceFlow_04yy7o0</bpmn2:outgoing></bpmn2:intermediateThrowEvent><bpmn2:sequenceFlow id="SequenceFlow_0irgyw4" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_xml2" /><bpmn2:sequenceFlow id="SequenceFlow_0283f4q" sourceRef="ExclusiveGateway_xml2" targetRef="IntermediateThrowEvent_xml2" /><bpmn2:sequenceFlow id="SequenceFlow_04yy7o0" sourceRef="IntermediateThrowEvent_xml2" targetRef="EndEvent_0ad1ojk" /></bpmn2:process><bpmndi:BPMNDiagram id="BPMNDiagram_1"><bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1"><bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1"><dc:Bounds x="412" y="240" width="36" height="36" /></bpmndi:BPMNShape><bpmndi:BPMNShape id="EndEvent_0ad1ojk_di" bpmnElement="EndEvent_0ad1ojk"><dc:Bounds x="772" y="240" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="745" y="276" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id="ExclusiveGateway_xml2_di" bpmnElement="ExclusiveGateway_xml2" isMarkerVisible="true"><dc:Bounds x="501" y="233" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="481" y="283" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id="IntermediateThrowEvent_xml2_di" bpmnElement="IntermediateThrowEvent_xml2"><dc:Bounds x="604" y="240" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="577" y="276" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNEdge id="SequenceFlow_0irgyw4_di" bpmnElement="SequenceFlow_0irgyw4"><di:waypoint xsi:type="dc:Point" x="448" y="258" /><di:waypoint xsi:type="dc:Point" x="501" y="258" /><bpmndi:BPMNLabel><dc:Bounds x="429.5" y="233" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id="SequenceFlow_0283f4q_di" bpmnElement="SequenceFlow_0283f4q"><di:waypoint xsi:type="dc:Point" x="551" y="258" /><di:waypoint xsi:type="dc:Point" x="604" y="258" /><bpmndi:BPMNLabel><dc:Bounds x="532.5" y="233" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id="SequenceFlow_04yy7o0_di" bpmnElement="SequenceFlow_04yy7o0"><di:waypoint xsi:type="dc:Point" x="640" y="258" /><di:waypoint xsi:type="dc:Point" x="772" y="258" /><bpmndi:BPMNLabel><dc:Bounds x="661" y="233" width="90" height="20" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn2:definitions>';
+
+    var piData = {
+      id : "5a65b691d6e82b6c28442d48",
+      processDefinitionName : "Test",
+      processDefinitionId : "5a65b691d6e82b6c28442d46",
+      processDefinitionBpmnId : "Process_1",
+      workflowInstanceId : "5a65b691d6e82b6c28442d47",
+      _processTokens : {
+          "a9a506ae-3ffc-4db8-8be4-dce5108cd3de" : {
+              name : "Start",
+              startTime : "2018-01-22T10:01:53.563Z",
+              bpmnId : "StartEvent_1",
+              id : "a9a506ae-3ffc-4db8-8be4-dce5108cd3de",
+              status : "complete",
+              endTime : "2018-01-22T10:01:53.598Z"
+          },
+          "90aa0909-4d54-4f35-ab18-6da788957330" : {
+              name : "TaskD",
+              startTime : "2018-01-22T10:01:53.596Z",
+              bpmnId : "UserTask_xml1",
+              id : "90aa0909-4d54-4f35-ab18-6da788957330",
+              status : "complete",
+              endTime : "2018-01-22T10:01:53.801Z"
+          },
+          "449654e4-ae8b-4538-8376-2018c9aaa90f" : {
+              name : "TaskB",
+              startTime : "2018-01-22T10:01:53.801Z",
+              bpmnId : "ServiceTask_xml1",
+              id : "449654e4-ae8b-4538-8376-2018c9aaa90f",
+              status : "failed",
+              error:{
+                message: "This is the error"
+              },
+              endTime : "2018-01-22T10:01:55.656Z"
+          }
+      },
+      _status : "complete"
+    }
+      
+  </script>
+</head>
+
+<body>
+
+  <test-fixture id="basic">
+    <template>
+      <oe-bpmn-viewer></oe-bpmn-viewer>
+    </template>
+  </test-fixture>
+
+  <script type="module">
+    import '@polymer/iron-test-helpers/test-helpers.js';
+    import '@polymer/iron-test-helpers/mock-interactions.js';
+    
+    suite('Viewer', function () {
+      test('Element loads and is empty initially', function () {
+        var bpmnViewer = fixture('basic');
+        var canvas = bpmnViewer.viewer.get('canvas');
+        var rootElement = canvas.getRootElement();
+        expect(rootElement.children).to.be.an('array').and.be.empty;
+      });
+      test('bpmnXml is rendered', function (done) {
+        var bpmnViewer = fixture('basic');
+        bpmnViewer.addEventListener('oe-bpmn-viewer-loaded', function(e){
+            var canvas = bpmnViewer.viewer.get('canvas');
+            var rootElement = canvas.getRootElement();
+            expect(rootElement.children).to.be.an('array').and.not.be.empty;
+            var usertask = rootElement.children.find(function(v){
+              return v.id === 'UserTask_xml1';
+            });
+            var servicetask = rootElement.children.find(function(v){
+              return v.id === 'ServiceTask_xml1';
+            });
+            expect(usertask).to.be.ok;
+            expect(servicetask).to.be.ok;
+            done();
+        });
+        bpmnViewer.set('bpmnXml', xml1);
+      });
+    });
+    test('error is returned when invalid xml is set', function (done) {
+      var bpmnViewer = fixture('basic');
+      bpmnViewer.addEventListener('oe-bpmn-viewer-load-failed', function(e){
+        var canvas = bpmnViewer.viewer.get('canvas');
+        var rootElement = canvas.getRootElement();
+        expect(rootElement.children).to.be.an('array').and.be.empty;
+        expect(e.detail).to.be.ok;
+        done();
+      });
+      bpmnViewer.set('bpmnXml', 'invalid xml data');
+    });
+    test('Nodes are highlighted with process-instance is set', function (done) {
+      var bpmnViewer = fixture('basic');
+      bpmnViewer.addEventListener('oe-bpmn-viewer-loaded', function(e){
+        bpmnViewer.set('processInstance', piData);
+        var canvas = bpmnViewer.viewer.get('canvas');
+
+        expect(canvas._elementRegistry._elements.ServiceTask_xml1, 'ServiceTask_xml1 is missing').to.be.ok;
+        var hasError = canvas._elementRegistry._elements.ServiceTask_xml1.gfx.classList.contains('failed');
+        expect(hasError,'Failed Nodes should have failed class set').to.be.ok;
+        var hasCompleted = canvas._elementRegistry._elements.ServiceTask_xml1.gfx.classList.contains('complete');
+        expect(hasCompleted,'Failed Nodes should NOT have complete class set').to.be.not.ok;
+        
+        expect(canvas._elementRegistry._elements.UserTask_xml1, 'UserTask_xml1 is missing').to.be.ok;
+        var hasError = canvas._elementRegistry._elements.UserTask_xml1.gfx.classList.contains('failed');
+        expect(hasError,'Completed Nodes should NOT have failed class set').to.be.not.ok;
+        var hasCompleted = canvas._elementRegistry._elements.UserTask_xml1.gfx.classList.contains('complete');
+        expect(hasCompleted,'Completed Nodes should have complete class set').to.be.ok;
+
+        done();
+      });
+      bpmnViewer.set('bpmnXml', xml1);
+    });
+
+    test('Drilldown event is raised when element is double-clicked', function (done) {
+      var bpmnViewer = fixture('basic');
+      bpmnViewer.set('processInstance', piData);
+      
+      bpmnViewer.addEventListener('oe-bpmn-viewer-drilldown', function(evt){
+        expect(evt.detail.type).to.equal('bpmn:ServiceTask');
+        expect(evt.detail.bpmnId).to.equal('ServiceTask_xml1');
+        done();
+      });
+      bpmnViewer.addEventListener('oe-bpmn-viewer-loaded', function(e){
+        var canvas = bpmnViewer.viewer.get('canvas');
+        expect(canvas._elementRegistry._elements.ServiceTask_xml1, 'ServiceTask_xml1 is missing').to.be.ok;
+        var gfx = canvas._elementRegistry._elements.ServiceTask_xml1.gfx;
+        gfx.dispatchEvent(new MouseEvent("dblclick", {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        }));        
+      });
+      bpmnViewer.set('bpmnXml', xml1);
+    });
+
+    test('oe-processtoken-overlay raises rerun event', function (done) {
+      var bpmnViewer = fixture('basic');
+      bpmnViewer.set('processInstance', piData);
+      
+      bpmnViewer.addEventListener('oe-workflow-rerun', function(evt){
+        expect(evt.detail.processInstanceId).to.equal(piData.id);
+        expect(evt.detail.processToken, 'Process Token not set on rerun event').to.be.ok;
+        expect(evt.detail.processToken.bpmnId).to.equal('ServiceTask_xml1');
+        done();
+      });
+      bpmnViewer.addEventListener('oe-bpmn-viewer-loaded', function(e){        
+        var canvas = bpmnViewer.viewer.get('canvas');
+        var scriptOverlay = bpmnViewer.shadowRoot.querySelector('oe-processtoken-panel');
+        expect(scriptOverlay,'Overlay element not created').to.be.ok;
+        scriptOverlay._rerun();
+        done();
+      });
+      bpmnViewer.set('bpmnXml', xml1);
+    });
+    
+  </script>
+
+</body>
+
+</html>
