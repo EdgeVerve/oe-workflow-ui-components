@@ -15,6 +15,7 @@ import 'oe-info/oe-info.js';
 import "oe-i18n-msg/oe-i18n-msg.js";
 import "oe-utils/oe-utils.js";
 import "oe-utils/date-utils.js";
+import '@polymer/paper-tooltip/paper-tooltip.js';
 
 var OEUtils = window.OEUtils || {};
 /**
@@ -68,6 +69,12 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         .layout-2x >* {
           width: 50%;
         }
+        .labl {
+          font-weight: bold;
+          max-width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
         .box {
           box-shadow: 1px 1px 1px 0px rgba(4, 4, 4, 0.34);
         }
@@ -77,9 +84,12 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
           <template is="dom-repeat" items="{{workflowDefName}}" as="workflow">
             <paper-item class="box" on-tap="_setFlag" data-def-id$=[[workflow.id]]>
             <div class="layout horizontal center justified fullsize font" style="cursor:pointer">
-              <label style="font-weight: bold;">{{workflow.name}}</label>
+            <div class="labl" id="lbl">
+            <label>{{workflow.name}}</label>
+            <paper-tooltip>{{workflow.name}}</paper-tooltip>
+              </div>
               <div>
-              <span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}
+              <!--span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}</span-->
               <span class="pad" aria-label="HH:MM:SS" title="HH:MM:SS">Min {{_getTimeAnalytics(workflow.workflowInstances,"min",workflow.name)}}</span>
               <span class="pad" aria-label="HH:MM:SS" title="HH:MM:SS">Max {{_getTimeAnalytics(workflow.workflowInstances,"max",workflow.name)}}</span>
               <span class="pad" aria-label="HH:MM:SS" title="HH:MM:SS">Avg {{_getTimeAnalytics(workflow.workflowInstances,"avg",workflow.name)}}</span> 
