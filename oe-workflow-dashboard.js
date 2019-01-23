@@ -12,6 +12,7 @@ import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
 import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import 'oe-info/oe-info.js';
+import '@polymer/paper-tooltip/paper-tooltip.js';
 /**
  * ### oe-workflow-dashboard 
  * Display workflow instances with main process details.
@@ -60,6 +61,12 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       .layout-2x >* {
         width: 50%;
       }
+      .labl {
+        font-weight: bold;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
       .box {
         box-shadow: 1px 1px 1px 0px rgba(4, 4, 4, 0.34);
       }
@@ -69,7 +76,10 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         <template is="dom-repeat" items="{{workflowDefName}}" as="workflow">
           <paper-item class="box" on-tap="_setFlag" data-def-id$=[[workflow.id]]>
           <div class="layout horizontal center justified fullsize font" style="cursor:pointer">
-            <label style="font-weight: bold;">{{workflow.name}}</label>
+          <div class="labl" id="lbl">
+          <label>{{workflow.name}}</label>
+          <paper-tooltip>{{workflow.name}}</paper-tooltip>
+            </div>
             <div>
             <span class="pad">Complete {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}</span>
             <span class="pad">Pending {{_getStatus(workflow.workflowInstances,"running",workflow.name)}}</span>

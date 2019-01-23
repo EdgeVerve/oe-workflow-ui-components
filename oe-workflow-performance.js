@@ -13,8 +13,6 @@ import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import 'oe-info/oe-info.js';
 import "oe-i18n-msg/oe-i18n-msg.js";
-import "oe-utils/oe-utils.js";
-import "oe-utils/date-utils.js";
 import '@polymer/paper-tooltip/paper-tooltip.js';
 
 var OEUtils = window.OEUtils || {};
@@ -90,9 +88,9 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
               </div>
               <div>
               <!--span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}</span-->
-              <span class="pad" aria-label="HH:MM:SS" title="HH:MM:SS">Min {{_getTimeAnalytics(workflow.workflowInstances,"min",workflow.name)}}</span>
-              <span class="pad" aria-label="HH:MM:SS" title="HH:MM:SS">Max {{_getTimeAnalytics(workflow.workflowInstances,"max",workflow.name)}}</span>
-              <span class="pad" aria-label="HH:MM:SS" title="HH:MM:SS">Avg {{_getTimeAnalytics(workflow.workflowInstances,"avg",workflow.name)}}</span> 
+              <span class="pad">Min {{_getTimeAnalytics(workflow.workflowInstances,"min",workflow.name)}}<paper-tooltip>HH:MM:SS</paper-tooltip></span>
+              <span class="pad">Max {{_getTimeAnalytics(workflow.workflowInstances,"max",workflow.name)}}<paper-tooltip>HH:MM:SS</paper-tooltip></span>
+              <span class="pad">Avg {{_getTimeAnalytics(workflow.workflowInstances,"avg",workflow.name)}}<paper-tooltip>HH:MM:SS</paper-tooltip></span> 
               </div>
             </div>
             </paper-item>
