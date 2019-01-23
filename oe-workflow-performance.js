@@ -43,7 +43,8 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
           font-size: 12px;
         }
         .pad{
-          padding: var(--my-padding, 12px);
+          padding: var(--my-padding, 8px);
+          font-size: 10px;
         }
         .pad2{
           padding: var(--my-padding, 16px);
