@@ -21,7 +21,10 @@
     "oe-info": "git+http://10.73.97.24/polymer-3/oe-info.git#master",
     "oe-mixins": "git+http://10.73.97.24/polymer-3/oe-mixins.git#master",
     "oe-utils": "git+http://10.73.97.24/polymer-3/oe-utils.git#master",
-    "web-animations-js": "2.3.1"
+    "web-animations-js": "2.3.1",
+    "@polymer/iron-icons": "^3.0.1",
+    "@polymer/paper-tabs": "^3.0.1",
+    "fakerest": "^2.1.0"
   },
   "keywords": [
     "polymer",

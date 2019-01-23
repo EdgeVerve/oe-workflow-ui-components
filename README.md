@@ -1,21 +1,32 @@
 # \<oe-workflow-ui-components\>
 
 
+`<oe-workflow-dashboard>` workflow instances for each workflow is listed and Allow visualizing deployed workflow definitions with Current running process-instances and their progress.
 
-## Install the Polymer-CLI
-
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) and npm (packaged with [Node.js](https://nodejs.org)) installed. Run `npm install` to install your element's dependencies, then run `polymer serve` to serve your element locally.
-
-## Viewing Your Element
-
-```
-$ polymer serve
+```html
+<oe-workflow-dashboard></oe-workflow-dashboard>
 ```
 
-## Running Tests
+`<oe-workflow-manager>` Allow visualizing workflow mappings to the models.The workflow manager will be displayed in the table for using `<oe-data-table>` component.
 
-```
-$ polymer test
+```html
+<oe-workflow-manager></oe-workflow-manager>
 ```
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+`<oe-workflow-inbox>` oe-workflow-inbox component helps to list all the tasks assigned to a particular user based on the username or roles.
+
+```html
+<oe-workflow-inbox></oe-workflow-inbox>
+```
+
+ `<oe-workflow-performance>` Analytics on workflow performance and user-tasks completion reports and Min/Max/Avg time for workflow Instances to complete
+
+```html
+<oe-workflow-performance></oe-workflow-performance>
+```
+
+`<oe-bpmn-viewer>` graphical representation of workflow models using bpmn modules. `<oe-processtoken-overlay>` and `<oe-processtoken-panel>` used internally in `<oe-bpmn-viewer>` component.
+
+```html
+<oe-bpmn-viewer></oe-bpmn-viewer>
+```
