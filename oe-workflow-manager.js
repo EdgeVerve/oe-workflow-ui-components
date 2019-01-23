@@ -9,7 +9,8 @@ import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
 import { OECommonMixin } from "oe-mixins/oe-common-mixin.js";
 import { OEAjaxMixin } from "oe-mixins/oe-ajax-mixin.js";
 /**
- * `oe-workflow-manager`
+ * ### oe-workflow-Manager
+ * `oe-workflow-Manager`  
  * 
  *
  * @customElement
@@ -50,6 +51,9 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
           return restApiRoot;
         }
       },
+     /**
+      * Array of workflow manager
+      */
       workflowManger:{
         type: Array,
         value: function () {

@@ -13,7 +13,8 @@ import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import 'oe-info/oe-info.js';
 /**
- * ### oe-workflow-dashboard
+ * ### oe-workflow-dashboard 
+ * Display workflow instances with main process details.
  * 
  * @customElement
  * @polymer
@@ -159,7 +160,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * To Get the error message by checking the status.
    * @param {Object} processTokens process tokens of process Instance
    * @param {string} status status of process Instance.
-   * @return {string} .
+   * @return {string} error message.
    */
   _getErrorMessage(processTokens, status) {
     var self = this;
@@ -187,7 +188,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   /**
    * To get the endTime of Process Instance.
    * @param {Object} prctoken process tokens of process Instance.
-   * @return {Date} .
+   * @return {Date} end Time.
    */
   _getEndTime(prctoken) {
     var len;
@@ -207,7 +208,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * To get the primary process.
    * @param {string} name Workflow Definition name. 
    * @param {Array} processInstance Array Processes of workflow Instance. 
-   * @return {boolean} .
+   * @return {Array} completeProcess.
    */
   _checkProcess(name, workflowInst) {
     var self = this;
@@ -265,7 +266,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @param {Array} workflowInst Array of workflow Instances.
    * @param {string} status status of process instance.
    * @param {string} name workflow definition name.
-   * @return {boolean} .
+   * @return {Number} .
    */
   _getStatus(workflowInst, status, name) {
     var statusArray = [];

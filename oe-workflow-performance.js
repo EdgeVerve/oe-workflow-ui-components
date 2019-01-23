@@ -19,6 +19,9 @@ import "oe-utils/date-utils.js";
 var OEUtils = window.OEUtils || {};
 /**
  * ### oe-workflow-performance
+ * `oe-workflow-performance`
+ * Min/Max/Avg time for workflow Instances to complete
+ *
  * 
  * @customElement
  * @polymer
@@ -124,12 +127,9 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       errorMessage: {
         type: String
       },
-      startTimes: {
-        type: Date
-      },
-      endTimes: {
-        type: Date
-      },
+      /**
+       * Array holding milliseconds of processes of each instance.
+       */
       mlsArray: {
         type: Array,
         value: function () {
@@ -142,7 +142,7 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   /**
    * To get the startTime of Process Instance.
    * @param {Object} procToken holds processTokens.
-   * @return {Array} .
+   * @return {Date} Start time.
    */
   _getTime(procToken) {
     var self = this;
@@ -167,6 +167,12 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     });
 
   }
+  /**
+   * method calculates the time take to complete the process.
+   * @param {proctoken} holds processTokens.
+   * @return {String}.
+   */
+
   _calculateTime(proctoken) {
     var self = this;
     var stTime = self._getTime(proctoken);
@@ -190,7 +196,7 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   /**
    * To get the endTime of Process Instance.
    * @param {Object} prctoken process tokens of process Instance.
-   * @return {Date} .
+   * @return {Date} End Time.
    */
   _getEndTime(prctoken) {
     var len;
@@ -210,7 +216,7 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * To get the primary process.
    * @param {string} name Workflow Definition name. 
    * @param {Array} processInstance Array Processes of workflow Instance. 
-   * @return {boolean} .
+   * @return {Array} complete processes.
    */
   _checkProcess(name, workflowInst) {
     var self = this;
@@ -226,6 +232,13 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     return completeProcess;
 
   }
+  /**
+   * To get the primary process.
+   * @param {string} name Workflow Definition name. 
+   * @param {Array} workflowInst Array of workflow instances. 
+   * @param {string} status .
+   * @return {string}.
+   */
   _getTimeAnalytics(workflowInst, status, name) {
     var self = this;
     var diff_ms, hours = 0, minutes = 0, seconds = 0;
