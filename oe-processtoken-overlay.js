@@ -39,7 +39,7 @@ class oeProcesstokenOverlay extends OECommonMixin(PolymerElement) {
       <paper-menu-button>
         <paper-icon-button slot="dropdown-trigger" class="dropdown-trigger" icon="speaker-notes" alt="more"></paper-icon-button>
         <div slot="dropdown-content" class="dropdown-content">
-          <paper-card>
+          <paper-card style="width:400px">
             <div class="card-actions layout horizontal flex">
               <span class="layout flex auto-margin">[[processToken.name]]</span>
               <template is="dom-if" if="[[_hasFailed(processToken)]]">

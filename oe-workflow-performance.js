@@ -78,9 +78,10 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
             <div class="layout horizontal center justified fullsize font" style="cursor:pointer">
               <label style="font-weight: bold;">{{workflow.name}}</label>
               <div>
-              <span class="pad" aria-label="hh:mm:ss" title="hh:mm:ss">Minimum {{_getTimeAnalytics(workflow.workflowInstances,"min",workflow.name)}}</span>
-              <span class="pad" aria-label="hh:mm:ss" title="hh:mm:ss">Maximum {{_getTimeAnalytics(workflow.workflowInstances,"max",workflow.name)}}</span>
-              <span class="pad" aria-label="hh:mm:ss" title="hh:mm:ss">Average {{_getTimeAnalytics(workflow.workflowInstances,"avg",workflow.name)}}</span> 
+              <span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}
+              <span class="pad" aria-label="HH:MM:SS" title="HH:MM:SS">Min {{_getTimeAnalytics(workflow.workflowInstances,"min",workflow.name)}}</span>
+              <span class="pad" aria-label="HH:MM:SS" title="HH:MM:SS">Max {{_getTimeAnalytics(workflow.workflowInstances,"max",workflow.name)}}</span>
+              <span class="pad" aria-label="HH:MM:SS" title="HH:MM:SS">Avg {{_getTimeAnalytics(workflow.workflowInstances,"avg",workflow.name)}}</span> 
               </div>
             </div>
             </paper-item>
@@ -260,53 +261,39 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     });
     if (status === 'min' && self.mlsArray.length != 0) {
       var minimum = Math.min.apply(Math, self.mlsArray);
-      
-      minimum = minimum / 1000;
-      seconds = Math.ceil(minimum % 60);
-      minimum = minimum / 60;
-      minutes = Math.floor(minimum % 60);
-      minimum = minimum / 60;
-      hours = Math.floor(minimum % 24);
-      if (hours < 10) { hours = "0" + hours; }
-      if (minutes < 10) { minutes = "0" + minutes; }
-      if (seconds < 10) { seconds = "0" + seconds; }
-      return hours + ':' + minutes + ':' + seconds;
+      var result = self._calTime(minimum);
+      return result;
     }
     else if (status === 'max' && self.mlsArray.length != 0) {
       var maximum = Math.max.apply(Math, self.mlsArray);
-      maximum = maximum / 1000;
-      seconds = Math.ceil(maximum % 60);
-      maximum = maximum / 60;
-      minutes = Math.floor(maximum % 60);
-      maximum = maximum / 60;
-      hours = Math.floor(maximum % 24);
-      if (hours < 10) { hours = "0" + hours; }
-      if (minutes < 10) { minutes = "0" + minutes; }
-      if (seconds < 10) { seconds = "0" + seconds; }
-      return hours + ':' + minutes + ':' + seconds;
+      var result = self._calTime(maximum);
+      return result;
     }
     else if (status == 'avg' && self.mlsArray.length != 0) {
       self.mlsArray.forEach(function (ele) {
         sum = sum + ele;
       });
       var average = sum / self.mlsArray.length;
-      average = average / 1000;
-      seconds = Math.ceil(average % 60);
-      average = average / 60;
-      minutes = Math.floor(average % 60);
-      average = average / 60;
-      hours = Math.floor(average % 24);
-      if (hours < 10) { hours = "0" + hours; }
-      if (minutes < 10) { minutes = "0" + minutes; }
-      if (seconds < 10) { seconds = "0" + seconds; }
-      return hours + ':' + minutes + ':' + seconds;
+      var result = self._calTime(average);
+      return result;
     }
     else{
+      var result = self._calTime(0);
+      return result;
+    }
+  }
+  _calTime(TimeML){
+      var  hours = 0, minutes = 0, seconds = 0;
+      TimeML = TimeML / 1000;
+      seconds = Math.ceil(TimeML % 60);
+      TimeML = TimeML / 60;
+      minutes = Math.floor(TimeML % 60);
+      TimeML = TimeML / 60;
+      hours = Math.floor(TimeML % 24);
       if (hours < 10) { hours = "0" + hours; }
       if (minutes < 10) { minutes = "0" + minutes; }
       if (seconds < 10) { seconds = "0" + seconds; }
       return hours + ':' + minutes + ':' + seconds;
-    }
   }
   /**
 * Method invoked on-tap event on workflow definintion name.
@@ -347,5 +334,24 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     super.connectedCallback();
     this._getWorkFlowInstance();
   }
+  /**
+   * To display the count of failed,pending and complete processes.
+   * @param {Array} workflowInst Array of workflow Instances.
+   * @param {string} status status of process instance.
+   * @param {string} name workflow definition name.
+   * @return {Number} .
+   */
+  _getStatus(workflowInst, status, name) {
+    var statusArray = [];
+    workflowInst.forEach(function (instance) {
+      instance.processes.forEach(function (proc) {
+        if (proc.processDefinitionName === name && proc._status === 'complete') {
+          statusArray.push(proc._status);
+        }
+      });
+    });
+    return statusArray.length;
+  }
 }
+
 window.customElements.define(oeWorkflowPerformance.is, oeWorkflowPerformance);
