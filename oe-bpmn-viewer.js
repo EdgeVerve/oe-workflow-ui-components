@@ -79,19 +79,9 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         type: String,
         observer: "_bpmnXmlChanged"
       },
-      newItem: {
-        type: Array,
-        value: function () {
-          return [];
-        }
-      },
       processInstance: {
         type: Object,
         observer: "_processInstanceChanged"
-      },
-      processDefinitionName: {
-        type: String,
-        observer: "processDefinitionSpec"
       },
       tokenViewer: {
         type: String,
@@ -214,9 +204,6 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
 
   _processInstanceChanged(instance) {
     var self = this;
-    if (instance) {
-      self.newItem.push(instance);
-    }
     var canvas = self.viewer.get('canvas');
     var rootElement = canvas.getRootElement();
     if (rootElement && rootElement.children && rootElement.children.length > 0) {

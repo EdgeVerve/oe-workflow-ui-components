@@ -48,6 +48,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       .fullsize {
         height: 100%;
         width: 100%;
+        background-color: #fff;
       }
       oe-info {
         --oe-info-label: {
@@ -58,6 +59,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         };
         margin-bottom:8px;
       }
+
       .layout-2x >* {
         width: 50%;
       }
@@ -190,7 +192,6 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    */
   _instanceClick(event) {
     this.async(function () {
-      debugger
       this.fire('oe-workflow-instance',event.model.process);
   });
 

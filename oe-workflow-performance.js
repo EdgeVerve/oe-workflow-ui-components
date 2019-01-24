@@ -15,7 +15,7 @@ import 'oe-info/oe-info.js';
 import "oe-i18n-msg/oe-i18n-msg.js";
 import '@polymer/paper-tooltip/paper-tooltip.js';
 
-var OEUtils = window.OEUtils || {};
+
 /**
  * ### oe-workflow-performance
  * `oe-workflow-performance`
@@ -54,6 +54,7 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         .fullsize {
           height: 100%;
           width: 100%;
+          background-color: #fff;
         }
         oe-info {
           --oe-info-label: {
@@ -87,7 +88,7 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
             <paper-tooltip>{{workflow.name}}</paper-tooltip>
               </div>
               <div>
-              <!--span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}</span-->
+              <span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}</span>
               <span class="pad">Min {{_getTimeAnalytics(workflow.workflowInstances,"min",workflow.name)}}<paper-tooltip>HH:MM:SS</paper-tooltip></span>
               <span class="pad">Max {{_getTimeAnalytics(workflow.workflowInstances,"max",workflow.name)}}<paper-tooltip>HH:MM:SS</paper-tooltip></span>
               <span class="pad">Avg {{_getTimeAnalytics(workflow.workflowInstances,"avg",workflow.name)}}<paper-tooltip>HH:MM:SS</paper-tooltip></span> 
@@ -172,7 +173,7 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    */
   _instanceClick(event) {
     this.async(function () {
-      debugger
+      
       this.fire('oe-workflow-instance', event.model.process);
     });
 

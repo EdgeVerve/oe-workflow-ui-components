@@ -1,7 +1,6 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import "@polymer/iron-icon/iron-icon.js";
 import 'oe-data-table/oe-data-table.js';
-import 'oe-data-table/demo/custom-demo-snippet.js';
 import '@polymer/iron-icon/iron-icon.js';
 import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
