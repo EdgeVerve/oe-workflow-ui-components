@@ -89,9 +89,9 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
               </div>
               <div>
               <span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}</span>
-              <span class="pad">Min {{_getTimeAnalytics(workflow.workflowInstances,"min",workflow.name)}}<paper-tooltip>HH:MM:SS</paper-tooltip></span>
-              <span class="pad">Max {{_getTimeAnalytics(workflow.workflowInstances,"max",workflow.name)}}<paper-tooltip>HH:MM:SS</paper-tooltip></span>
-              <span class="pad">Avg {{_getTimeAnalytics(workflow.workflowInstances,"avg",workflow.name)}}<paper-tooltip>HH:MM:SS</paper-tooltip></span> 
+              <span class="pad">Min {{_getTimeAnalytics(workflow.workflowInstances,"min",workflow.name)}}</span>
+              <span class="pad">Max {{_getTimeAnalytics(workflow.workflowInstances,"max",workflow.name)}}</span>
+              <span class="pad">Avg {{_getTimeAnalytics(workflow.workflowInstances,"avg",workflow.name)}}</span> 
               </div>
             </div>
             </paper-item>
@@ -100,7 +100,7 @@ class oeWorkflowPerformance extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
                 <div class="block pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
                   <oe-info label="StartTime" type="timestamp" value={{_getTime(process._processTokens)}}></oe-info>
                   <oe-info label="EndTime" type="timestamp" value={{_getEndTime(process._processTokens)}}></oe-info>
-                  <oe-info label="Time taken" type="normal" value={{_calculateTime(process._processTokens)}}></oe-info>
+                  <oe-info label="Time taken" value={{_calculateTime(process._processTokens)}}></oe-info>
                 </div>
             </template>
             </iron-collapse>

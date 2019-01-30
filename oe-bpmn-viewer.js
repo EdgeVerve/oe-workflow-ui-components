@@ -273,9 +273,11 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         break;
       case 'track':
         var canvas = this.viewer.get('canvas');
-        var matrix = canvas._viewport.transform.baseVal[0].matrix;
-        matrix.e+=e.detail.ddx;
-        matrix.f+=e.detail.ddy;
+        if(canvas._viewport.transform.baseVal[0]){ 
+          var matrix = canvas._viewport.transform.baseVal[0].matrix;
+          matrix.e+=e.detail.ddx;
+          matrix.f+=e.detail.ddy;
+        }
         break;
       case 'end':
         break;
