@@ -8,11 +8,11 @@ import "@polymer/iron-icon/iron-icon.js";
 import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
-import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
-import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import 'oe-info/oe-info.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
+import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
+import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
 /**
  * ### oe-workflow-dashboard 
  * Display workflow instances with main process details.

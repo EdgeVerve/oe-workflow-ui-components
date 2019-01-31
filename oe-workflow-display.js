@@ -5,6 +5,7 @@ import 'oe-data-table/demo/custom-demo-snippet.js';
 import '@polymer/iron-icon/iron-icon.js';
 import "@polymer/iron-icons/iron-icons.js";
 import '@polymer/paper-input/paper-input.js';
+import '@polymer/paper-input/paper-textarea.js';
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
 import '@polymer/paper-icon-button/paper-icon-button.js';
@@ -14,17 +15,16 @@ import { OECommonMixin } from "oe-mixins/oe-common-mixin.js";
 import { OEAjaxMixin } from "oe-mixins/oe-ajax-mixin.js";
 var OEUtils = window.OEUtils || {};
 /**
- * ###oe-workflow-display
+ * ### oe-workflow-display
+ * `oe-workflow-display`  
  * 
  *
  * @customElement
  * @polymer
- * 
  * @appliesMixin OECommonMixin
  * @appliesMixin OEAjaxMixin
  * @demo demo/demo-oe-workflow-display.html
  */
-
 class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   static get template() {
     return html`
@@ -73,19 +73,19 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   </style>
     <div class="layout horizontal fullsize" id="OeWorkflowDisplay">
     <div class="fullsize">
-    <div class="layout horizontal center justified fullsize font">
+    <div class="layout horizontal center justified font pad">
     <div class="labl" id="lbl">
       <label>{{_displayObj.name}}</label>
       <paper-tooltip>{{_displayObj.name}}</paper-tooltip>
       </div>
     <div>
-      <span class="pad">Completed: [[_displayObj.status.complete]]</span>
-      <span class="pad">Failed: [[_displayObj.status.failed]]</span>
-      <span class="pad">Pending: [[_displayObj.status.running]]</span>
+      <span class="pad" style="cursor:pointer" id='complete' on-tap="_valMethod">Complete: {{_displayObj.status.complete}}</span>
+      <span class="pad" style="cursor:pointer" id='failed' on-tap="_valMethod">Failed: {{_displayObj.status.failed}}</span>
+      <span class="pad" style="cursor:pointer" id='running' on-tap="_valMethod">Running: {{_displayObj.status.running}}</span>
     </div>
     </div>
-    <template is="dom-repeat" items="{{_displayObj.instances}}" as="primProcess">
-    <div class="block pad2 layout-2x layout horizontal wrap fullsize">
+    <template is="dom-repeat" items="{{_displayObj.instances}}" as="primProcess" filter="{{_filter(_filterVal)}}">
+    <div class="block pad2 layout-2x layout horizontal wrap" style="cursor:pointer" on-tap="_instanceClick">
     <oe-info label="Process Id" value={{primProcess.processId}}></oe-info>
     <oe-info label="Process Status" value={{primProcess.status}}></oe-info>
       <template is="dom-repeat" items="{{primProcess.instanceVariable}}" as="specs">
@@ -131,10 +131,37 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
           return {};
         }
 
+      },
+      _filterVal:{
+        type:String
       }
     };
   }
-  _getInstance(instance) {
+  /**
+   * method invoked on-tap on workflow instance.
+   * @event oe-workflow-instance
+   * @param {Event} event . 
+   */
+  _instanceClick(event) {
+    this.async(function () {
+      this.fire('oe-workflow-details',event.model.primProcess);
+  });
+}
+_filter(val) { 
+  var self = this;
+  return function(processItem){
+      if(!val){ return null;}
+      if(processItem.status === val){
+        return processItem;
+    }
+  }
+}
+_valMethod(event){
+  var self = this;
+  self.set('_filterVal',event.currentTarget.innerText.split(':')[0].toLowerCase())
+  
+}
+  _getInstance(parent) {
     var self = this;
     var _displayObj = {};
     _displayObj.instances = [];
@@ -143,9 +170,9 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       failed: 0,
       running: 0
     }
-    if (instance && self.instanceProperties) {
+    if (self.instance && self.instanceProperties) {
       _displayObj.name = self.name;
-      instance.forEach(function (defObj) {
+      self.instance.forEach(function (defObj) {
         defObj.workflowInstances.forEach(function (workflowInst) {
 
           workflowInst.processes.forEach(function (proc) {
@@ -181,7 +208,6 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
 
         });
       });
-      debugger
       self.set('_displayObj', _displayObj);
     }
   }
