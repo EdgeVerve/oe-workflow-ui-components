@@ -69,6 +69,9 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .workflowInstance{
+      font-family: var(--my-font-family, sans-serif);
+    }
   </style>
     <div class="layout horizontal fullsize" id="OeWorkflowDisplay">
     <div class="fullsize">
@@ -78,14 +81,14 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       <paper-tooltip>{{_displayObj.name}}</paper-tooltip>
       </div>
     <div>
-      <span class="pad" style="cursor:pointer" on-tap="_valMethod">All</span>
+      <span class="pad" style="cursor:pointer" id='all' on-tap="_valMethod">All</span>
       <span class="pad" style="cursor:pointer" id='complete' on-tap="_valMethod">Complete: {{_displayObj.status.complete}}</span>
       <span class="pad" style="cursor:pointer" id='failed' on-tap="_valMethod">Failed: {{_displayObj.status.failed}}</span>
       <span class="pad" style="cursor:pointer" id='running' on-tap="_valMethod">Running: {{_displayObj.status.running}}</span>
     </div>
     </div>
     <template is="dom-repeat" items="{{_displayObj.instances}}" as="primProcess" filter="{{_filter(_filterVal)}}">
-    <div class="block pad2 layout-2x layout horizontal wrap" style="cursor:pointer" on-tap="_instanceClick">
+    <div class="block pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
     <oe-info label="Process Id" value={{primProcess.processId}}></oe-info>
     <oe-info label="Process Status" value={{primProcess.status}}></oe-info>
       <template is="dom-repeat" items="{{primProcess.instanceVariable}}" as="specs">
@@ -143,8 +146,11 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @param {Event} event . 
    */
   _instanceClick(event) {
-    this.async(function () {
-      this.fire('oe-workflow-instance', event.model.primProcess);
+    var self=this;
+    self.async(function () {
+      debugger
+      self.fire('oe-workflow-details', event.model);
+     
     });
   }
   _filter(val) {
