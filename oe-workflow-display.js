@@ -78,6 +78,7 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       <paper-tooltip>{{_displayObj.name}}</paper-tooltip>
       </div>
     <div>
+      <span class="pad" style="cursor:pointer" on-tap="_valMethod">All</span>
       <span class="pad" style="cursor:pointer" id='complete' on-tap="_valMethod">Complete: {{_displayObj.status.complete}}</span>
       <span class="pad" style="cursor:pointer" id='failed' on-tap="_valMethod">Failed: {{_displayObj.status.failed}}</span>
       <span class="pad" style="cursor:pointer" id='running' on-tap="_valMethod">Running: {{_displayObj.status.running}}</span>
@@ -131,8 +132,8 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         }
 
       },
-      _filterVal:{
-        type:String
+      _filterVal: {
+        type: String
       }
     };
   }
@@ -143,23 +144,24 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    */
   _instanceClick(event) {
     this.async(function () {
-      this.fire('oe-workflow-instance',event.model.primProcess);
-  });
-}
-_filter(val) { 
-  var self = this;
-  return function(processItem){
-      if(!val){ return null;}
-      if(processItem.status === val){
+      this.fire('oe-workflow-instance', event.model.primProcess);
+    });
+  }
+  _filter(val) {
+    var self = this;
+    return function (processItem) {
+      if (!val) { return null; }
+      if (val === 'all') { return processItem; }
+      if (processItem.status === val) {
         return processItem;
+      }
     }
   }
-}
-_valMethod(event){
-  var self = this;
-  self.set('_filterVal',event.currentTarget.innerText.split(':')[0].toLowerCase())
-  
-}
+  _valMethod(event) {
+    var self = this;
+    self.set('_filterVal', event.currentTarget.innerText.split(':')[0].toLowerCase())
+
+  }
   _getInstance(parent) {
     var self = this;
     var _displayObj = {};
