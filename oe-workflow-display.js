@@ -148,8 +148,7 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   _instanceClick(event) {
     var self=this;
     self.async(function () {
-      debugger
-      self.fire('oe-workflow-details', event.model);
+      self.fire('oe-workflow-details', event.model.primProcess);
      
     });
   }
@@ -159,12 +158,14 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       if (!val) { return null; }
       if (val === 'all') { return processItem; }
       if (processItem.status === val) {
+        
         return processItem;
       }
     }
   }
   _valMethod(event) {
     var self = this;
+    
     self.set('_filterVal', event.currentTarget.innerText.split(':')[0].toLowerCase())
 
   }

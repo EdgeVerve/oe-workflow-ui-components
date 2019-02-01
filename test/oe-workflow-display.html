@@ -746,28 +746,32 @@
         import '@polymer/iron-test-helpers/test-helpers.js';
         import '@polymer/iron-test-helpers/mock-interactions.js';
         suite('Workflow Details', function () {
-            test('Filtering instance for status running', function (done) {
+            test('Filtering instance based on status', function (done) {
                 var ele = fixture('BasicFixture');
                 var flag = false;
                 ele.set('instance', data);
+                ele.set('_filterVal','complete');
                 flush(function () {
-                    var ontapEle = ele.shadowRoot.querySelector('span#complete');
-                    ontapEle.click();
                     var onTapObj = ele.shadowRoot.querySelector('div.workflowInstance');
-                    onTapObj.click();
-                    ele.addEventListener('oe-workflow-details',function(evt){
-                        if(evt.detail){
-                            debugger
-                           flag = true;
-                        }
-                        assert.isTrue(flag);
+                    if(onTapObj){
+                        onTapObj.click();
+                        ele.addEventListener('oe-workflow-details', function (evt) {
+                            if (evt.detail) {
+
+                                flag = true;
+                            }
+                            assert.isTrue(flag);
+                            done();
+                     });
+                    }
+                    else{
                         done();
-                    });
+                    }
 
                 });
 
             });
-           
+
         });
 
     </script>
