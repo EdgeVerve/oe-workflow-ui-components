@@ -64,15 +64,16 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
             <div id="fields" class="layout horizontal wrap">
                </div>
             <div id="grids" class="layout vertical">
-            <oe-input label="Model Name" value="{{mapping.modelName}}"></oe-input>
-              <oe-input label="Operation" value="{{mapping.operation}}"></oe-input>
-              <oe-input label="mappingName" value="{{mapping.mappingName}}"></oe-input>
-              <oe-input label="wfDependent" value="{{mapping.wfDependent}}"></oe-input>
-              <oe-input label="version" value="{{mapping.version}}"></oe-input>
-              <oe-json-input label="workflowBody" placeholder='{"workflowDefinitionName": "ApprovalWorkflow"}' value="{{mapping.workflowBody}}"></oe-json-input>
-             <oe-json-input label="Remote" placeholder='{"path":"/special-order/:id","method":"SpclOrderBYId","verb":"put"}' value="{{mapping.remote}}"></oe-json-input>
-           
-            </div>
+            <oe-input label="Model Name" required value="{{mapping.modelName}}"></oe-input>
+              <oe-input label="Operation" required value="{{mapping.operation}}" on-blur="_blured"></oe-input>
+              <oe-input label="version" required value="{{mapping.version}}" pattern="{{_val}}" on-focus="_blured"></oe-input>
+              <oe-input label="wfDependent" required value="{{mapping.wfDependent}}"></oe-input>
+              <oe-json-input label="workflowBody" required placeholder='{"workflowDefinitionName": "ApprovalWorkflow"}' value="{{mapping.workflowBody}}"></oe-json-input>
+              <oe-json-input label="Remote" required placeholder='{"path":"/special-order/:id","method":"SpclOrderBYId","verb":"put"}' value="{{mapping.remote}}"></oe-json-input>
+              <template is="dom-if" if="[[_checkVersion(mapping.version)]]">
+                <oe-input label="mappingName" required value="{{mapping.mappingName}}"></oe-input>
+              </template>
+              </div>
             </div>
         </div>
         `;
@@ -92,6 +93,9 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
       },
       modelAlias:{
         type:String
+      },
+      _val:{
+        type:String
       }
     }
   }
@@ -103,8 +107,26 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
   connectedCallback() {
     super.connectedCallback();
     this.modelAlias = "mapping";
+    this._val=".*";
+  }
+  _blured(e){
+    var self=this;
+    if(self.mapping.operation){
+    if(self.mapping.operation === 'custom'){
+      self._val = 'v2|v0';
+    }
+  }
+  }
+  _checkVersion(vsn){
+    if(vsn === "v2" || vsn === "V2"){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 }
+
 
 window.customElements.define("add-mapping", OEFormMessagesMixin(AddMapping));
 
