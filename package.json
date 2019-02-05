@@ -4,6 +4,7 @@
   "version": "3.0.0",
   "dependencies": {
     "@polymer/iron-collapse": "^3.0.1",
+    "@polymer/iron-form": "^3.0.1",
     "@polymer/iron-icons": "^3.0.1",
     "@polymer/iron-list": "^3.0.1",
     "@polymer/paper-button": "^3.0.1",
@@ -11,6 +12,7 @@
     "@polymer/paper-icon-button": "^3.0.1",
     "@polymer/paper-item": "^3.0.1",
     "@polymer/paper-listbox": "^3.0.1",
+    "@polymer/paper-material": "^3.0.1",
     "@polymer/paper-menu-button": "^3.0.1",
     "@polymer/paper-tabs": "^3.0.1",
     "@polymer/paper-tooltip": "^3.0.1",
@@ -23,7 +25,8 @@
     "oe-info": "git+http://10.73.97.24/polymer-3/oe-info.git#master",
     "oe-mixins": "git+http://10.73.97.24/polymer-3/oe-mixins.git#master",
     "oe-utils": "git+http://10.73.97.24/polymer-3/oe-utils.git#master",
-    "web-animations-js": "2.3.1"
+    "web-animations-js": "2.3.1",
+    "oe-input": "git+http://10.73.97.24/polymer-3/oe-input.git#master"
   },
   "keywords": [
     "polymer",
