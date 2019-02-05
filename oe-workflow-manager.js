@@ -30,7 +30,7 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   
       </style>
     <div class="layout horizontal fullsize" id="OeWorkflowManager">
-    <oe-data-table id='workflow-manager' label="Workflow Manager" items=[[workflowManger]] columns=[[columns]] row-actions=[[rowActions]] editor-form-url="../oe-workflow-ui-components/components/add-mapping.js" on-oe-data-table-row-action="_instanceClick">
+    <oe-data-table id='workflow-manager' label="Workflow Manager" items=[[workflowManger]] columns=[[columns]] row-actions=[[rowActions]] editor-form-url="../oe-workflow-ui-components/add-mapping.js" on-oe-data-table-row-action="_instanceClick">
     </oe-data-table>
     </div>`;
   }
