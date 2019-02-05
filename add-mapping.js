@@ -1,4 +1,4 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { OEFormMessagesMixin } from "oe-mixins/form-mixins/oe-form-messages-mixin";
 import { OEFormValidationMixin } from "oe-mixins/form-mixins/oe-form-validation-mixin";
 import { OEModelHandler } from "oe-mixins/form-mixins/oe-model-handler";
@@ -95,17 +95,8 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
       },
       _val:{
         type:String
-      },
-      /**
-      * url used in makeAjax call.
-      */
-     restUrl: {
-        type: String,
-        value: function () {
-          var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
-          return restApiRoot;
-        }
-      },
+      }
+     
     }
   }
 
@@ -117,7 +108,6 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
     super.connectedCallback();
     this.modelAlias = "mapping";
     this._val=".*";
-    this.restUrl = 'api//WorkflowManagers/workflows';
   }
   _blured(e){
     var self=this;
