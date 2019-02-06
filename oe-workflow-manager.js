@@ -31,7 +31,7 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   
       </style>
     <div class="layout horizontal fullsize" id="OeWorkflowManager">
-    <oe-data-table id='workflow-manager' data-controller={{_dataController}} label="Workflow Manager" columns=[[columns]] row-actions=[[rowActions]] editor-form-url="../oe-workflow-ui-components/add-mapping.js" on-oe-data-table-row-action="_instanceClick">
+    <oe-data-table id='workflow-manager' rest-url="/api/WorkflowManagers/workflows" label="Workflow Manager" columns=[[columns]] row-actions=[[rowActions]] editor-form-url="../oe-workflow-ui-components/add-mapping.js" on-oe-data-table-row-action="_instanceClick">
     </oe-data-table>
     </div>`;
   }
@@ -41,21 +41,22 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
 
   static get properties() {
     return {
-     /**
-      * url used in makeAjax call.
-      */
-      // restUrl: {
-      //   type: String,
-      //   value: function () {
-      //     var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
-      //     return restApiRoot;
-      //   }
-      // },
+    //  /**
+    //   * url used in makeAjax call.
+    //   */
+    //   restUrl: {
+    //     type: String,
+    //     value: function () {
+    //       var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+    //       return restApiRoot;
+    //     }
+    //   },
      /**
       * Array of workflow manager
       */
-      
+    
     };
+   
   }
    /**
    * method invoked on-tap on workflow instance.
@@ -92,12 +93,10 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   connectedCallback() {
     super.connectedCallback();
    
-    var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+    // var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
           
-    var Url = restApiRoot + '/WorkflowManagers/workflows';
-    this.set('_dataController',{
-      restUrl:Url
-    })
+    // var url = restApiRoot + '/WorkflowManagers/workflows';
+    // this.restUrl = url;
     this.set('columns',[{
       key: 'workflowBody.workflowDefinitionName',
       label: 'Workflow Name',

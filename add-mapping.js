@@ -6,7 +6,7 @@ import "@polymer/iron-flex-layout/iron-flex-layout-classes";
 import "@polymer/iron-flex-layout/iron-flex-layout";
 import "oe-input/oe-input.js";
 import "oe-input/oe-json-input.js";
-
+var OEUtils = window.OEUtils || {};
 
 class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
   static get template() {
@@ -96,9 +96,10 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
       _val:{
         type:String
       },
-     restUrl:{
-      type: String
-     }
+      
+      resturl:{
+        type:String
+      }
     }
   }
 
@@ -111,7 +112,7 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
     this.modelAlias = "mapping";
     var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';  
     var Url = restApiRoot + '/WorkflowManagers/workflows';
-    this.restUrl = Url;
+    this.resturl = Url;
     this._val=".*";
   }
   _blured(e){
