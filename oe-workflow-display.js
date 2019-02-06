@@ -148,8 +148,7 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   _instanceClick(event) {
     var self=this;
     self.async(function () {
-      debugger
-      self.fire('oe-workflow-details', event.model.primProcess.process);
+      self.fire('oe-workflow-instance', event.model.primProcess.process);
      
     });
   }
