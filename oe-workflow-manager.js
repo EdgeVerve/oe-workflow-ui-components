@@ -54,12 +54,7 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
      /**
       * Array of workflow manager
       */
-      workflowManger:{
-        type: Array,
-        value: function () {
-          return [];
-        }
-      }
+      
     };
   }
    /**
@@ -103,8 +98,6 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     this.set('_dataController',{
       restUrl:Url
     })
-
-    this._getWorkFlowMangers();
     this.set('columns',[{
       key: 'workflowBody.workflowDefinitionName',
       label: 'Workflow Name',
