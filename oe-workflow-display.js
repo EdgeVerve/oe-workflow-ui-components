@@ -28,11 +28,7 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   static get template() {
     return html`
     <style include="iron-flex iron-flex-alignment">
-    .block {
-      font-family: var(--my-font-family, sans-serif);
-      font-weight: bold;
-      border: 1px solid black;
-    }
+   
     .font {
       font-size: 12px;
     }
@@ -44,6 +40,8 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     }
     .workflowInstance{
       font-family: var(--my-font-family, sans-serif);
+      font-weight: bold;
+      
     }
     .fullsize {
       height: 100%;
@@ -88,13 +86,13 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     </div>
     </div>
     <template is="dom-repeat" items="{{_displayObj.instances}}" as="primProcess" filter="{{_filter(_filterVal)}}">
-    <div class="block pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
+    <paper-material elevation="1" class="pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
     <oe-info label="Process Id" value={{primProcess.processId}}></oe-info>
     <oe-info label="Process Status" value={{primProcess.status}}></oe-info>
       <template is="dom-repeat" items="{{primProcess.instanceVariable}}" as="specs">
         <oe-info label="{{specs.label}}" value={{specs.value}}></oe-info>
       </template>
-      </div>
+      </paper-material>
     </div>
     </template>
     </div>`;

@@ -5,6 +5,7 @@ import '@polymer/iron-icon/iron-icon.js';
 import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
+import './add-mapping.js';
 import { OECommonMixin } from "oe-mixins/oe-common-mixin.js";
 import { OEAjaxMixin } from "oe-mixins/oe-ajax-mixin.js";
 /**
@@ -30,7 +31,7 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   
       </style>
     <div class="layout horizontal fullsize" id="OeWorkflowManager">
-    <oe-data-table id='workflow-manager' label="Workflow Manager" items=[[workflowManger]] columns=[[columns]] row-actions=[[rowActions]] editor-form-url="../oe-workflow-ui-components/add-mapping.js" on-oe-data-table-row-action="_instanceClick">
+    <oe-data-table id='workflow-manager' data-controller={{_dataController}} label="Workflow Manager" columns=[[columns]] row-actions=[[rowActions]] editor-form-url="../oe-workflow-ui-components/add-mapping.js" on-oe-data-table-row-action="_instanceClick">
     </oe-data-table>
     </div>`;
   }
@@ -43,13 +44,13 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
      /**
       * url used in makeAjax call.
       */
-      restUrl: {
-        type: String,
-        value: function () {
-          var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
-          return restApiRoot;
-        }
-      },
+      // restUrl: {
+      //   type: String,
+      //   value: function () {
+      //     var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+      //     return restApiRoot;
+      //   }
+      // },
      /**
       * Array of workflow manager
       */
@@ -76,25 +77,33 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
 
   }
 
-  /**
-   * Methos makes ajax call to get workflows.
-   * @param {Object} parent .
-   */
-  _getWorkFlowMangers(parent) {
-    var self = this;
-    var Url = self.restUrl + '/WorkflowManagers/workflows';
-    self.makeAjaxCall(Url, 'get', null, null, null, 'json', function (err, response) {
-      var res = response;
-      if (res) {
-        self.workflowManger = res;
-      }
-    });
-  }
+  // /**
+  //  * Methos makes ajax call to get workflows.
+  //  * @param {Object} parent .
+  //  */
+  // _getWorkFlowMangers(parent) {
+  //   var self = this;
+  //   var Url = self.restUrl + '/WorkflowManagers/workflows';
+  //   self.makeAjaxCall(Url, 'get', null, null, null, 'json', function (err, response) {
+  //     var res = response;
+  //     if (res) {
+  //       self.workflowManger = res;
+  //     }
+  //   });
+  // }
    /**
     * Connected call back method to invoke the _getWorkFlowMangers() method.
     */
   connectedCallback() {
     super.connectedCallback();
+   
+    var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+          
+    var Url = restApiRoot + '/WorkflowManagers/workflows';
+    this.set('_dataController',{
+      restUrl:Url
+    })
+
     this._getWorkFlowMangers();
     this.set('columns',[{
       key: 'workflowBody.workflowDefinitionName',

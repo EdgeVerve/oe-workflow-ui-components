@@ -43,15 +43,15 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
                         <iron-icon icon="description" item-icon></iron-icon>
                         <oe-i18n-msg msgid="New">New</oe-i18n-msg>
                     </paper-item>
-                    <paper-item on-tap="doCopy" disabled$="{{mapping.id}}">
+                    <paper-item on-tap="doCopy" disabled$="{{!mapping.id}}">
                         <iron-icon icon="content-copy" item-icon></iron-icon>
                         <oe-i18n-msg msgid="Copy">Copy</oe-i18n-msg>
                     </paper-item>
-                    <paper-item on-tap="doFetch" disabled$="{{mapping.id}}">
+                    <paper-item on-tap="doFetch" disabled$="{{!mapping.id}}">
                         <iron-icon icon="refresh" item-icon></iron-icon>
                         <oe-i18n-msg msgid="Refresh">Refresh</oe-i18n-msg>
                     </paper-item>
-                    <paper-item on-tap="doDelete" oe-action-model="mapping" disabled$="{{mapping.id}}">
+                    <paper-item on-tap="doDelete" oe-action-model="mapping" disabled$="{{!mapping.id}}">
                         <iron-icon icon="delete" item-icon></iron-icon>
                         <oe-i18n-msg msgid="Delete">Delete</oe-i18n-msg>
                     </paper-item>
@@ -66,10 +66,10 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
             <oe-input label="Model Name" required value="{{mapping.modelName}}"></oe-input>
               <oe-input label="Operation" required value="{{mapping.operation}}" on-blur="_blured"></oe-input>
               <oe-input label="version" required value="{{mapping.version}}" pattern="{{_val}}" on-focus="_blured"></oe-input>
-              <oe-input label="wfDependent" required value="{{mapping.wfDependent}}"></oe-input>
+              <oe-input label="wfDependent" required value="{{mapping.wfDependent}}" pattern="true|false"></oe-input>
               <oe-json-input label="workflowBody" required placeholder='{"workflowDefinitionName": "ApprovalWorkflow"}' value="{{mapping.workflowBody}}"></oe-json-input>
               <oe-json-input label="Remote" required placeholder='{"path":"/special-order/:id","method":"SpclOrderBYId","verb":"put"}' value="{{mapping.remote}}"></oe-json-input>
-              <template is="dom-if" if="[[_checkVersion(mapping.version)]]">
+              <template is="dom-if" if="[[_checkVersion(mapping.version,mapping.operation)]]">
                 <oe-input label="mappingName" required value="{{mapping.mappingName}}"></oe-input>
               </template>
               </div>
@@ -95,8 +95,10 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
       },
       _val:{
         type:String
-      }
-     
+      },
+     restUrl:{
+      type: String
+     }
     }
   }
 
@@ -107,23 +109,28 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
   connectedCallback() {
     super.connectedCallback();
     this.modelAlias = "mapping";
+    var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';  
+    var Url = restApiRoot + '/WorkflowManagers/workflows';
+    this.restUrl = Url;
     this._val=".*";
   }
   _blured(e){
     var self=this;
     if(self.mapping.operation){
-    if(self.mapping.operation === 'custom'){
+    if(self.mapping.operation.toLowerCase() === 'custom'){
       self._val = 'v2|v0';
     }
   }
   }
-  _checkVersion(vsn){
-    if(vsn === "v2" || vsn === "V2"){
+  _checkVersion(vsn,opn){
+    if(vsn && opn){
+    if(vsn.toLowerCase() === "v2" && opn.toLowerCase() === 'custom'){
       return true;
     }
     else{
       return false;
     }
+  }
   }
 }
 
