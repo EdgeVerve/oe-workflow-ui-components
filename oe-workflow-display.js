@@ -148,7 +148,8 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   _instanceClick(event) {
     var self=this;
     self.async(function () {
-      self.fire('oe-workflow-details', event.model.primProcess);
+      debugger
+      self.fire('oe-workflow-details', event.model.primProcess.process);
      
     });
   }
@@ -195,6 +196,7 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
                 _displayObj.status.running = _displayObj.status.running + 1;
 
               }
+             
               var propArray = [];
               self.instanceProperties.forEach(function (property) {
                 var val = OEUtils.deepValue(workflowInst, property.value);
@@ -207,7 +209,8 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
               _displayObj.instances.push({
                 processId: proc.id,
                 status: proc._status,
-                instanceVariable: propArray
+                instanceVariable: propArray,
+                process:proc
               });
 
             }

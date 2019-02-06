@@ -70,6 +70,10 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       .box {
         box-shadow: 1px 1px 1px 0px rgba(4, 4, 4, 0.34);
       }
+      paper-button { 
+        margin: 10px;  
+        padding: 15px;
+    }
     </style>
     <div class="layout horizontal fullsize" id="oedashboard">
       <paper-listbox class="fullsize">
