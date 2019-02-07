@@ -43,15 +43,15 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
                         <iron-icon icon="description" item-icon></iron-icon>
                         <oe-i18n-msg msgid="New">New</oe-i18n-msg>
                     </paper-item>
-                    <paper-item on-tap="doCopy" disabled$="{{!mapping.id}}">
+                    <paper-item on-tap="doCopy" disabled$="{{mapping.id}}">
                         <iron-icon icon="content-copy" item-icon></iron-icon>
                         <oe-i18n-msg msgid="Copy">Copy</oe-i18n-msg>
                     </paper-item>
-                    <paper-item on-tap="doFetch" disabled$="{{!mapping.id}}">
+                    <paper-item on-tap="doFetch" disabled$="{{mapping.id}}">
                         <iron-icon icon="refresh" item-icon></iron-icon>
                         <oe-i18n-msg msgid="Refresh">Refresh</oe-i18n-msg>
                     </paper-item>
-                    <paper-item on-tap="doDelete" oe-action-model="mapping" disabled$="{{!mapping.id}}">
+                    <paper-item on-tap="doDelete" oe-action-model="mapping" disabled$="{{mapping.id}}">
                         <iron-icon icon="delete" item-icon></iron-icon>
                         <oe-i18n-msg msgid="Delete">Delete</oe-i18n-msg>
                     </paper-item>
@@ -68,8 +68,8 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
               <oe-input label="version" required value="{{mapping.version}}" pattern="{{_val}}" on-focus="_blured"></oe-input>
               <oe-input label="wfDependent" required value="{{mapping.wfDependent}}" pattern="true|false"></oe-input>
               <oe-json-input label="workflowBody" required placeholder='{"workflowDefinitionName": "ApprovalWorkflow"}' value="{{mapping.workflowBody}}"></oe-json-input>
-              <oe-json-input label="Remote" required placeholder='{"path":"/special-order/:id","method":"SpclOrderBYId","verb":"put"}' value="{{mapping.remote}}"></oe-json-input>
               <template is="dom-if" if="[[_checkVersion(mapping.version,mapping.operation)]]">
+                <oe-json-input label="Remote" required placeholder='{"path":"/special-order/:id","method":"SpclOrderBYId","verb":"put"}' value="{{mapping.remote}}"></oe-json-input>
                 <oe-input label="mappingName" required value="{{mapping.mappingName}}"></oe-input>
               </template>
               </div>
