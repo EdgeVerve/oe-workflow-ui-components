@@ -68,8 +68,10 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
               <oe-input label="version" required value="{{mapping.version}}" pattern="{{_val}}" on-focus="_blured"></oe-input>
               <oe-input label="wfDependent" required value="{{mapping.wfDependent}}" pattern="true|false"></oe-input>
               <oe-json-input label="workflowBody" required placeholder='{"workflowDefinitionName": "ApprovalWorkflow"}' value="{{mapping.workflowBody}}"></oe-json-input>
-              <template is="dom-if" if="[[_checkVersion(mapping.version,mapping.operation)]]">
+              <template is="dom-if" if="[[_checkVersion2(mapping.version,mapping.operation)]]">
                 <oe-json-input label="Remote" required placeholder='{"path":"/special-order/:id","method":"SpclOrderBYId","verb":"put"}' value="{{mapping.remote}}"></oe-json-input>
+              </template>  
+              <template is="dom-if" if="[[_checkVersion(mapping.version,mapping.operation)]]">
                 <oe-input label="mappingName" required value="{{mapping.mappingName}}"></oe-input>
               </template>
               </div>
@@ -126,6 +128,16 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
   _checkVersion(vsn,opn){
     if(vsn && opn){
     if(vsn.toLowerCase() === "v2" && opn.toLowerCase() === 'custom'){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  }
+  _checkVersion2(vsn,opn){
+    if(vsn && opn){
+    if((vsn.toLowerCase() === "v2" || vsn.toLowerCase() === "v0") && opn.toLowerCase() === 'custom'){
       return true;
     }
     else{
