@@ -50,10 +50,10 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     }
     oe-info {
       --oe-info-label: {
-        font-size: 8px;
+        font-size: 10px;
       };
       --oe-info-value: {
-        font-size: 10px;
+        font-size: 12px;
       };
       margin-bottom:8px;
     }
