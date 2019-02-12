@@ -761,7 +761,7 @@
                 var flag=false;
                 ele.set('workflowDefName', data);
                 flush(function () {
-                    var ontapEle = ele.shadowRoot.querySelector('div.workflowInstance');
+                    var ontapEle = ele.shadowRoot.querySelector('paper-material.workflowInstance');
                     ontapEle.click();
                     ele.addEventListener('oe-workflow-instance',function(evt){
                         if(evt.detail._inst){
