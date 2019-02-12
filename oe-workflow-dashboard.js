@@ -5,7 +5,7 @@ import 'oe-ajax/oe-ajax.js';
 import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/paper-item/paper-item.js';
 import "@polymer/iron-icon/iron-icon.js";
-import '@polymer/paper-button/paper-button.js'
+import '@polymer/paper-button/paper-button.js';
 import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
@@ -301,7 +301,6 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @return {Array} complete processes.
    */
   _checkProcessAnalytics(name, workflowInst) {
-    var self = this;
     var completeProcess = [];
     workflowInst.forEach(function (instance) {
       instance.processes.forEach(function (proc) {
@@ -321,7 +320,6 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @return {Array} completeProcess.
    */
   _checkProcess(name, workflowInst) {
-    var self = this;
     var completeProcess = [];
     workflowInst.forEach(function (instance) {
       instance.processes.forEach(function (proc) {
@@ -378,7 +376,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @param {Array} workflowInst Array of workflow Instances.
    * @param {string} status status of process instance.
    * @param {string} name workflow definition name.
-   * @return {Number} .
+   * @return {number} .
    */
   _getStatus(workflowInst, status, name) {
     var statusArray = [];
@@ -422,8 +420,9 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    */
   _getTimeAnalytics(workflowInst, status, name) {
     var self = this;
-    var diff_ms, hours = 0, minutes = 0, seconds = 0;
+    var diff_ms;
     var sum = 0;
+    var result;
     self.mlsArray = [];
     workflowInst.forEach(function (instance) {
       instance.processes.forEach(function (proc) {
@@ -441,12 +440,12 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     });
     if (status === 'min' && self.mlsArray.length != 0) {
       var minimum = Math.min.apply(Math, self.mlsArray);
-      var result = self._calTime(minimum);
+      result = self._calTime(minimum);
       return result;
     }
     else if (status === 'max' && self.mlsArray.length != 0) {
       var maximum = Math.max.apply(Math, self.mlsArray);
-      var result = self._calTime(maximum);
+      result = self._calTime(maximum);
       return result;
     }
     else if (status == 'avg' && self.mlsArray.length != 0) {
@@ -454,11 +453,11 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         sum = sum + ele;
       });
       var average = sum / self.mlsArray.length;
-      var result = self._calTime(average);
+      result = self._calTime(average);
       return result;
     }
     else {
-      var result = self._calTime(0);
+      result = self._calTime(0);
       return result;
     }
   }
@@ -480,7 +479,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   * @param {Array} workflowInst Array of workflow Instances.
   * @param {string} status status of process instance.
   * @param {string} name workflow definition name.
-  * @return {Number} .
+  * @return {number} .
   */
   _getStatusAnalytics(workflowInst, status, name) {
     var statusArray = [];

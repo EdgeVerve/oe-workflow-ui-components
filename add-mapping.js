@@ -6,7 +6,7 @@ import "@polymer/iron-flex-layout/iron-flex-layout-classes";
 import "@polymer/iron-flex-layout/iron-flex-layout";
 import "oe-input/oe-input.js";
 import "oe-input/oe-json-input.js";
-var OEUtils = window.OEUtils || {};
+import "oe-utils/oe-utils.js";
 
 class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
   static get template() {
@@ -89,7 +89,7 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
           return {
             workflowBody: {},
             remote: {}
-          }
+          };
         }
       },
       modelAlias:{
@@ -102,7 +102,7 @@ class AddMapping extends OEFormValidationMixin(OEModelHandler(PolymerElement)) {
       resturl:{
         type:String
       }
-    }
+    };
   }
 
 

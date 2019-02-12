@@ -151,7 +151,6 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     });
   }
   _filter(val) {
-    var self = this;
     return function (processItem) {
       if (!val) { return null; }
       if (val === 'all') { return processItem; }
@@ -159,12 +158,12 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         
         return processItem;
       }
-    }
+    };
   }
   _valMethod(event) {
     var self = this;
     
-    self.set('_filterVal', event.currentTarget.innerText.split(':')[0].toLowerCase())
+    self.set('_filterVal', event.currentTarget.innerText.split(':')[0].toLowerCase());
 
   }
   _getInstance(parent) {
@@ -175,7 +174,7 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       complete: 0,
       failed: 0,
       running: 0
-    }
+    };
     if (self.instance && self.instanceProperties) {
       _displayObj.name = self.name;
       self.instance.forEach(function (defObj) {
@@ -200,8 +199,8 @@ class OeWorkflowDisplay extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
                 propArray.push({
                   label: property.label,
                   value: val
-                })
-              })
+                });
+              });
 
               _displayObj.instances.push({
                 processId: proc.id,
