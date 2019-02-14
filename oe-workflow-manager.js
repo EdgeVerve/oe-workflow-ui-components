@@ -1,11 +1,11 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import "@polymer/iron-icon/iron-icon.js";
 import 'oe-data-table/oe-data-table.js';
-import 'oe-data-table/demo/custom-demo-snippet.js';
 import '@polymer/iron-icon/iron-icon.js';
 import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
+import './add-mapping.js';
 import { OECommonMixin } from "oe-mixins/oe-common-mixin.js";
 import { OEAjaxMixin } from "oe-mixins/oe-ajax-mixin.js";
 /**
@@ -31,7 +31,7 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   
       </style>
     <div class="layout horizontal fullsize" id="OeWorkflowManager">
-    <oe-data-table id='workflow-manager' label="Workflow Manager" items=[[workflowManger]] columns=[[columns]] row-actions=[[rowActions]] disable-selection disable-delete disable-add disable-edit on-oe-data-table-row-action="_instanceClick">
+    <oe-data-table id='workflow-manager' rest-url="/api/WorkflowManagers/workflows" label="Workflow Manager" columns=[[columns]] row-actions=[[rowActions]] editor-form-url="../node_modules/oe-workflow-ui-components/add-mapping.js" on-oe-data-table-row-action="_instanceClick">
     </oe-data-table>
     </div>`;
   }
@@ -41,26 +41,22 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
 
   static get properties() {
     return {
-     /**
-      * url used in makeAjax call.
-      */
-      restUrl: {
-        type: String,
-        value: function () {
-          var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
-          return restApiRoot;
-        }
-      },
+    //  /**
+    //   * url used in makeAjax call.
+    //   */
+    //   restUrl: {
+    //     type: String,
+    //     value: function () {
+    //       var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+    //       return restApiRoot;
+    //     }
+    //   },
      /**
       * Array of workflow manager
       */
-      workflowManger:{
-        type: Array,
-        value: function () {
-          return [];
-        }
-      }
+    
     };
+   
   }
    /**
    * method invoked on-tap on workflow instance.
@@ -77,26 +73,30 @@ class OeWorkflowManager extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
 
   }
 
-  /**
-   * Methos makes ajax call to get workflows.
-   * @param {Object} parent .
-   */
-  _getWorkFlowMangers(parent) {
-    var self = this;
-    var Url = self.restUrl + '/WorkflowManagers/workflows';
-    self.makeAjaxCall(Url, 'get', null, null, null, 'json', function (err, response) {
-      var res = response;
-      if (res) {
-        self.workflowManger = res;
-      }
-    });
-  }
+  // /**
+  //  * Methos makes ajax call to get workflows.
+  //  * @param {Object} parent .
+  //  */
+  // _getWorkFlowMangers(parent) {
+  //   var self = this;
+  //   var Url = self.restUrl + '/WorkflowManagers/workflows';
+  //   self.makeAjaxCall(Url, 'get', null, null, null, 'json', function (err, response) {
+  //     var res = response;
+  //     if (res) {
+  //       self.workflowManger = res;
+  //     }
+  //   });
+  // }
    /**
     * Connected call back method to invoke the _getWorkFlowMangers() method.
     */
   connectedCallback() {
     super.connectedCallback();
-    this._getWorkFlowMangers();
+   
+    // var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+          
+    // var url = restApiRoot + '/WorkflowManagers/workflows';
+    // this.restUrl = url;
     this.set('columns',[{
       key: 'workflowBody.workflowDefinitionName',
       label: 'Workflow Name',

@@ -8,16 +8,17 @@
 <head>
   <meta charset="utf-8">
   <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
 </head>
 
 <body>
   <script>
     WCT.loadSuites([ //eslint-disable-line no-undef
       'oe-workflow-dashboard.html',
-      'oe-workflow-manager.html',
-      'oe-workflow-performance.html',
       'oe-bpmn-viewer.html',
+      'oe-workflow-display.html'
     ]);
 
   </script>

@@ -17,12 +17,25 @@
 
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+    <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
     <script src="../node_modules/sinon/pkg/sinon.js"></script>
-    <script type="module" src="../oe-workflow-performance.js"></script>
+    <script type="module" src="../oe-workflow-display.js"></script>
 
     <script>
         var data = [
+            {
+                "name": "TestFlow",
+                "latest": true,
+                "id": "41ff0fd7-7aa3-4e63-a241-b0ca25b4b8cc",
+                "bpmndataId": "5c37015511ce1c41d0be7855",
+                "_isDeleted": false,
+                "_version": "bef75433-c5f7-4865-92b7-0bdb68cc1078",
+                "workflowInstances": []
+            },
             {
                 "name": "SubFlow",
                 "latest": true,
@@ -116,7 +129,7 @@
                                 },
                                 "_synchronizeFlow": {},
                                 "passiveWait": false,
-                                "_status": "complete",
+                                "_status": "running",
                                 "id": "5c3703c611ce1c41d0be785e",
                                 "processDefinitionId": "5c37017711ce1c41d0be7859",
                                 "_isDeleted": false,
@@ -477,7 +490,7 @@
                                 },
                                 "_synchronizeFlow": {},
                                 "passiveWait": true,
-                                "_status": "complete",
+                                "_status": "running",
                                 "id": "5c37007f11ce1c41d0be783d",
                                 "processDefinitionId": "5c36e499418bb53878ce5265",
                                 "_isDeleted": false,
@@ -707,7 +720,7 @@
                                 },
                                 "_synchronizeFlow": {},
                                 "passiveWait": true,
-                                "_status": "complete",
+                                "_status": "running",
                                 "id": "5c3700b511ce1c41d0be784a",
                                 "processDefinitionId": "5c36e499418bb53878ce5265",
                                 "_isDeleted": false,
@@ -721,6 +734,7 @@
             }
         ]
 
+
     </script>
 </head>
 
@@ -728,54 +742,40 @@
 
     <test-fixture id="BasicFixture">
         <template>
-            <oe-workflow-performance></oe-workflow-performance>
+            <oe-workflow-display id="display-1" name="LoanApplication" instance-properties='[{"label":"Loan Type","value":"processVariables._modelInstance.type"},{"label":"Loan amount","value":"processVariables._modelInstance.amount"}]'></oe-workflow-display>
         </template>
     </test-fixture>
-    <test-fixture id="Instance">
-            <template>
-                <oe-workflow-performance></oe-workflow-performance>
-            </template>
-        </test-fixture>
-
     <script type="module">
         import { DomApi } from "@polymer/polymer/lib/legacy/polymer.dom";
         import '@polymer/iron-test-helpers/test-helpers.js';
         import '@polymer/iron-test-helpers/mock-interactions.js';
-        suite('Workflow Performance', function () {
-            test('On on-tap of workflow definition workflow instance is displayed', function (done) {
+        suite('Workflow Details', function () {
+            test('Filtering instance based on status', function (done) {
                 var ele = fixture('BasicFixture');
-                ele.set('workflowDefName', data);
+                var flag = false;
+                ele.set('instance', data);
+                ele.set('_filterVal','complete');
                 flush(function () {
-                    var ontapEle = ele.shadowRoot.querySelector('paper-item');
-                    var ironCol = ele.shadowRoot.querySelector('iron-collapse');
-                    ontapEle.click();
-                    var ironCol = ele.shadowRoot.querySelector('iron-collapse');
-                    assert.isTrue(ironCol.opened);
-                    ontapEle.click();
-                    assert.isFalse(ironCol.opened);
-                    done();
-                });
-            });
-            test('On on-tap of workflow instance fired the event with instance details', function (done) {
-                var ele = fixture('Instance');
-                var flag=false;
-                ele.set('workflowDefName', data);
-                flush(function () {
-                    var ontapEle = ele.shadowRoot.querySelector('div.workflowInstance');
-                    ontapEle.click();
-                    ele.addEventListener('oe-workflow-instance',function(evt){
-                        debugger
-                        if(evt.detail._inst){
-                           flag = true;
-                        }
-                        assert.isTrue(flag);
+                    var onTapObj = ele.shadowRoot.querySelector('div.workflowInstance');
+                    if(onTapObj){
+                        onTapObj.click();
+                        ele.addEventListener('oe-workflow-details', function (evt) {
+                            if (evt.detail) {
+
+                                flag = true;
+                            }
+                            assert.isTrue(flag);
+                            done();
+                     });
+                    }
+                    else{
                         done();
-                    });
-                   
+                    }
+
                 });
-                   
-                    
+
             });
+
         });
 
     </script>

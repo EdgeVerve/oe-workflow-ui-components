@@ -17,7 +17,11 @@
 
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+    <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
     <script src="../node_modules/sinon/pkg/sinon.js"></script>
     <script type="module" src="../oe-workflow-dashboard.js"></script>
 
@@ -761,7 +765,7 @@
                 var flag=false;
                 ele.set('workflowDefName', data);
                 flush(function () {
-                    var ontapEle = ele.shadowRoot.querySelector('div.workflowInstance');
+                    var ontapEle = ele.shadowRoot.querySelector('paper-material.workflowInstance');
                     ontapEle.click();
                     ele.addEventListener('oe-workflow-instance',function(evt){
                         if(evt.detail._inst){

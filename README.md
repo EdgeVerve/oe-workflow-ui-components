@@ -19,12 +19,6 @@
 <oe-workflow-inbox></oe-workflow-inbox>
 ```
 
- `<oe-workflow-performance>` Analytics on workflow performance and user-tasks completion reports and Min/Max/Avg time for workflow Instances to complete
-
-```html
-<oe-workflow-performance></oe-workflow-performance>
-```
-
 `<oe-bpmn-viewer>` graphical representation of workflow models using bpmn modules. `<oe-processtoken-overlay>` and `<oe-processtoken-panel>` used internally in `<oe-bpmn-viewer>` component.
 
 ```html
