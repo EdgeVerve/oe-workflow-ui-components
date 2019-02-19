@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>oe-workflow-inbox test</title>
+
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+    <script src="../node_modules/fakerest/dist/FakeRest.min.js"></script>
+    <script src="../node_modules/sinon/pkg/sinon.js"></script>
+
+  <script type="module" src="../oe-workflow-inbox.js"></script>
+</head>
+
+<body>
+
+
+  <test-fixture id="basic">
+    <template>
+      <oe-workflow-inbox></oe-workflow-inbox>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="templated">
+    <template>
+      <oe-workflow-inbox>
+        <template>
+          <div class="layout horizontal justified center task-item">
+            <label>Amount : [[item.formVariables.amount]]</label>
+            <span>Risk : [[item.formVariables.amount]]</span>
+            <paper-button on-tap="fireEvent" event-name="custom-action">Action</paper-button>
+          </div>
+        </template>
+      </oe-workflow-inbox>
+    </template>
+  </test-fixture>
+
+  <script type='module'>
+    import './disbursal-acceptance.js';
+
+    suite('oe-workflow-inbox', function () {
+      var server;
+      var testElement;
+      var templateElement;
+      var xhr, requests;
+      var userSession = {
+        "username": "judith",
+        "userid": "3bca9774-f4d9-11e6-bc64-92361f002003",
+        "tenantId": "demotenant",
+        "roles": ["customer"]
+      };
+      var tasks = [{
+        "name": "Request for Disbursing Amount",
+        "status": "pending",
+        "processTokenId": "206c5d2b-31ba-44e4-b396-acf6102da5ca",
+        "candidateUsers": ["judith"],
+        "formKey": "event:disbursal-acceptance",
+        "formType": "FormKey",
+        "formVariables": {
+          "type": "PERSONAL_LOAN",
+          "amount": 1,
+          "currency": "USD",
+          "tenure": 60,
+          "status": "pending",
+          "dr_status": "approved"
+        },
+        "id": "5a376d670fb150282ba0eb7e",
+        "processInstanceId": "5a3240529b4a74ac28da0c11",
+        "_type": "Task",
+        "_createdBy": "judith",
+        "_modifiedBy": "judith",
+        "_createdOn": "2017-12-18T07:25:27.629Z",
+        "_modifiedOn": "2017-12-18T07:25:27.629Z",
+        "_isDeleted": false,
+        "_version": "63e51f76-c8bb-4466-88d2-cf3adf508b35",
+        "workflowInstanceId": "5a3240529b4a74ac28da0c10"
+      }, {
+        "name": "Request for Disbursing Amount",
+        "status": "pending",
+        "processTokenId": "206c5d2b-31ba-44e4-b396-acf6102da5ca",
+        "candidateUsers": ["judith"],
+        "formKey": "elem:disbursal-acceptance",
+        "formType": "FormKey",
+        "formVariables": {
+          "type": "PERSONAL_LOAN",
+          "amount": 1,
+          "currency": "USD",
+          "tenure": 60,
+          "status": "pending",
+          "dr_status": "approved"
+        },
+        "id": "5a376d670fb150282ba0eb7e",
+        "processInstanceId": "5a3240529b4a74ac28da0c11",
+        "_type": "Task",
+        "_createdBy": "judith",
+        "_modifiedBy": "judith",
+        "_createdOn": "2017-12-18T07:25:27.629Z",
+        "_modifiedOn": "2017-12-18T07:25:27.629Z",
+        "_isDeleted": false,
+        "_version": "63e51f76-c8bb-4466-88d2-cf3adf508b35",
+        "workflowInstanceId": "5a3240529b4a74ac28da0c10"
+      },
+      {
+        "name": "Request for Disbursing Amount",
+        "status": "complete",
+        "processTokenId": "206c5d2b-31ba-44e4-b396-acf6102da5ca",
+        "candidateUsers": ["judith"],
+        "candidateRoles": ["customer"],
+        "formKey": "elem:disbursal-acceptance",
+        "formType": "FormKey",
+        "formVariables": {
+          "type": "PERSONAL_LOAN",
+          "amount": 1,
+          "currency": "USD",
+          "tenure": 60,
+          "status": "complete",
+          "dr_status": "approved"
+        },
+        "id": "5a376d670fb150282ba0eb7e",
+        "processInstanceId": "5a3240529b4a74ac28da0c11",
+        "_type": "Task",
+        "_createdBy": "judith",
+        "_modifiedBy": "judith",
+        "_createdOn": "2017-12-18T07:25:27.629Z",
+        "_modifiedOn": "2017-12-18T07:25:27.629Z",
+        "_isDeleted": false,
+        "_version": "63e51f76-c8bb-4466-88d2-cf3adf508b35",
+        "workflowInstanceId": "5a3240529b4a74ac28da0c10"
+      }
+      ];
+
+      setup(function (done) {
+
+        xhr = sinon.useFakeXMLHttpRequest();
+        requests = [];
+        xhr.onCreate = function (req) {
+          requests.push(req);
+        };
+
+        server = sinon.fakeServer.create();
+        server.autoRespond = true;
+        server.respondImmediately = true;
+        server.respondWith('GET', /\/api\/Tasks/, function (req) {
+          req.respond(200, 'application/json', JSON.stringify(tasks));
+        });
+        server.respondWith('GET', /\/api\/Users\/session/, function (req) {
+          req.respond(200, 'application/json', JSON.stringify(userSession));
+        });
+        testElement = fixture('basic');
+        templateElement = fixture('templated');
+        flush(function () {
+          done();
+        })
+      });
+      teardown(function () {
+        xhr.restore();
+        server.restore();
+      });
+
+      test('Testing initial setup', function (done) {
+        flush(function () {
+          assert.equal(testElement.userRoles.length, userSession.roles.length);
+          assert.equal(testElement.items.length, tasks.length);
+          done();
+        });
+      });
+
+      test('Testing tabs filtering', function (done) {
+        flush(function () {
+          assert.equal(testElement.userRoles.length, userSession.roles.length);
+          var tabs = testElement.shadowRoot.querySelectorAll('paper-tab');
+          setTimeout(function () {
+            tabs[0].click();
+            assert.equal(testElement.shadowRoot.querySelectorAll('.work-item:not([hidden])').length, tasks.length);
+            tabs[1].click();
+            setTimeout(function () {
+              assert.equal(testElement.shadowRoot.querySelectorAll('.work-item:not([hidden])').length, 1);
+              tabs[2].click();
+              setTimeout(function () {
+                assert.equal(testElement.shadowRoot.querySelectorAll('.work-item:not([hidden])').length, tasks.length - 1);
+                tabs[3].click();
+                setTimeout(function () {
+                  assert.equal(testElement.shadowRoot.querySelectorAll('.work-item:not([hidden])').length, 1);
+                  done();
+                }, 300);
+              }, 300);
+            }, 300);
+          }, 300);
+        });
+      });
+
+      /* test('Import type task handling', function (done) {
+        flush(function () {
+          var tasks = testElement.shadowRoot.querySelectorAll('.work-item');
+          tasks[0].click();
+          flush(function () {
+            setTimeout(function () {
+              assert.equal(testElement.formOpened, true);
+              var formEle = testElement.shadowRoot.querySelector('task-form');
+              assert.equal(formEle.is, 'task-form');
+              done();
+            }, 1000)
+          })
+        });
+      });
+ */
+      test('Event type task handling', function (done) {
+        var evListener = function (e) {
+          assert.equal(e.detail.name, "Request for Disbursing Amount");
+          testElement.removeEventListener('disbursal-acceptance', evListener)
+          done();
+        }
+        testElement.addEventListener('disbursal-acceptance', evListener);
+        flush(function () {
+          var tasks = testElement.shadowRoot.querySelectorAll('.work-item');
+          tasks[0].fire('tap');
+        });
+      });
+
+      test('Element type task handling', function (done) {
+        flush(function () {
+          var tasks = testElement.shadowRoot.querySelectorAll('.work-item');
+          tasks[1].click();
+          flush(function () {
+            setTimeout(function () {
+              assert.equal(testElement.formOpened, true);
+              var formEle = testElement.shadowRoot.querySelector('disbursal-acceptance');
+              assert.equal(formEle.tagName.toLowerCase(), 'disbursal-acceptance');
+              done();
+            }, 500)
+          })
+        });
+      });
+
+      test('Templating user task handling', function (done) {
+        flush(function () {
+          var qtaBtn = templateElement.querySelector('.task-item paper-button');
+          assert.equal(qtaBtn.getAttribute("event-name"), "custom-action");
+          done();
+        });
+      });
+    });
+  </script>
+
+</body>
+
+</html>
