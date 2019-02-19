@@ -19,7 +19,7 @@ import "@polymer/iron-icons/iron-icons.js";
  *
  * @customElement
  * @polymer
- * @demo demo/index.html
+ * @demo demo/demo-oe-workflow-inbox.html
  */
 class OeWorkflowInbox extends OECommonMixin(PolymerElement) {
   static get template() {
