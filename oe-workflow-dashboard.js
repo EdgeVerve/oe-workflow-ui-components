@@ -347,7 +347,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       callback = mime;
       mime = 'json';
     }
-    var oReq = XMLHttpRequest();
+    var oReq = new XMLHttpRequest();
     oReq.addEventListener('load', function(evt){
       if(evt.target.status >= 200 && evt.target.status < 300){
         callback(null, evt.target.response);
