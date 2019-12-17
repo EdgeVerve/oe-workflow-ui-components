@@ -342,25 +342,50 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     ironCol.toggle();
     this.addEventListener('tap', event.stopPropagation());
   }
+  _xhrget(url, mime, callback){
+    if(!callback && typeof mime === 'function'){
+      callback = mime;
+      mime = 'json';
+    }
+    var oReq = XMLHttpRequest();
+    oReq.addEventListener('load', function(evt){
+      if(evt.target.status >= 200 && evt.target.status < 300){
+        callback(null, evt.target.response);
+      } else {
+        callback(evt.target.statusText, null);
+      }
+    });
+    oReq.addEventListener('error', function(err){
+      callback(err);
+    });
+
+    oReq.open("GET", url);
+    oReq.responseType = mime;
+    oReq.send();
+  }
   /**
    * Methos makes ajax call to get workflow Definitions, workflow Instances, processes.
    * @param {Object} parent .
    */
   _getWorkFlowInstance(parent) {
     var self = this;
-    var filter = {
-      "include":
-      {
-        "workflowInstances": ["processes"]
-      }
-    };
-    var Url = self.restUrl + '/WorkflowDefinitions';
-    self.makeAjaxCall(Url, 'get', null, null, { "filter": filter }, 'json', function (err, response) {
-      var res = response;
-      if (res) {
-        self.workflowDefName = res;
-      }
-    });
+    // var filter = {
+    //   "include":
+    //   {
+    //     "workflowInstances": ["processes"]
+    //   }
+    // };
+    // var Url = self.restUrl + '/WorkflowDefinitions';
+    // self.makeAjaxCall(Url, 'get', null, null, { "filter": filter }, 'json', function (err, response) {
+    //   var res = response;
+    //   if (res) {
+      var self = this;
+      self._xhrget('WorkflowDefinitions', function(err, data){
+          self.workflowDefName = data;
+      });
+        
+     
+   // });
   }
   /**
    * Connected call back methos to invoke the _getWorkFlowInstance() method.
