@@ -380,11 +380,9 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     //   var res = response;
     //   if (res) {
       var self = this;
-      self._xhrget('WorkflowDefinitions', function(err, data){
+      self._xhrget('api/WorkflowDefinitions', function(err, data){
           self.workflowDefName = data;
       });
-        
-     
    // });
   }
   /**
