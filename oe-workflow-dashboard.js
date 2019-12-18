@@ -63,7 +63,6 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       }
       .labl {
         font-weight: bold;
-        max-width: 150px;
         overflow: hidden;
         text-overflow: ellipsis;
       }
@@ -340,7 +339,9 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     var defId = event.currentTarget.getAttribute('data-def-id');
     var ironCol = self.shadowRoot.querySelector('[data-collapse-def-id="' + defId + '"]');
     ironCol.toggle();
-    this.addEventListener('tap', event.stopPropagation());
+    this.addEventListener('tap',function(e){
+      e.stopPropagation();
+    });
   }
   _xhrget(url, mime, callback){
     if(!callback && typeof mime === 'function'){
@@ -380,7 +381,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     //   var res = response;
     //   if (res) {
       var self = this;
-      self._xhrget('api/WorkflowDefinitions', function(err, data){
+      self._xhrget('/WorkflowDefinitions', function(err, data){
           self.workflowDefName = data;
       });
    // });
