@@ -369,7 +369,6 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @param {Object} parent .
    */
   _getWorkFlowInstance(parent) {
-    var self = this;
     // var filter = {
     //   "include":
     //   {
@@ -381,7 +380,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     //   var res = response;
     //   if (res) {
       var self = this;
-      self._xhrget('/WorkflowDefinitions', function(err, data){
+      self._xhrget('WorkflowDefinitions', function(err, data){
           self.workflowDefName = data;
       });
    // });
