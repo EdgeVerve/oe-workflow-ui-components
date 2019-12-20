@@ -63,6 +63,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       }
       .labl {
         font-weight: bold;
+        max-width: 200px;
         overflow: hidden;
         text-overflow: ellipsis;
       }
@@ -72,6 +73,9 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       paper-button { 
         margin: 10px;  
         padding: 15px;
+    }
+    iron-collapse {
+      outline:none;
     }
     </style>
     <div class="layout horizontal fullsize" id="oedashboard">
