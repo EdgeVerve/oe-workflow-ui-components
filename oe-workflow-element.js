@@ -175,6 +175,10 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         }
 
       },
+      auto: {
+        type: Boolean,
+        value: false
+      },
       _flag: {
         type: Boolean,
         value: false
@@ -375,7 +379,7 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * Methos makes ajax call to get workflow Definitions, workflow Instances, processes.
    * @param {Object} parent .
    */
-  _getWorkFlowInstance(parent) {
+  _getWorkFlowInstance() {
     var self = this;
     var filter = {
       "include":
@@ -441,7 +445,9 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     super.connectedCallback();
     this._flag = false;
     this.set('_flagName', 'Analytics');
+    if(this.auto){
     this._getWorkFlowInstance();
+    }
   }
   checkCompletedProcess(workflowInst){
     var instanceArray = [];

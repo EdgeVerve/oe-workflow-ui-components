@@ -65,6 +65,11 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
     </style>
     <div class="layout horizontal flex fullsize">
       <div class="fullsize" id="canvas" on-track="_handleTrack"></div>
+      <paper-dialog id="modal" modal>
+      <oe-combo label="User" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
+      <oe-combo label="User Role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
+      <paper-button raised on-tap="_submit"><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
+      </paper-dialog>
       <div id="sidepanel"></div>
     </div>`;
   }
@@ -165,10 +170,6 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
           if (token && self.processInstance && self.tokenViewMode === 'sidepanel') {
             self._tokenViewer.set('processToken', token);
             self._tokenViewer.set('processInstanceId', self.processInstance.id);
-            if(self.userList && self.roleList){
-              self._tokenViewer.set('userList',self.userList);
-              self._tokenViewer.set('roleList',self.roleList);
-            }
             self.$.sidepanel.style.display = 'inline';
           }
         }
@@ -176,6 +177,14 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         self.$.sidepanel.style.display = 'none';
       }
     });
+  }
+  _submit(e){
+    var self = this;
+    var obj ={};
+    obj.user = self.shadowRoot.querySelectorAll('oe-combo')[0].value;
+    obj.role = self.shadowRoot.querySelectorAll('oe-combo')[1].value;
+    obj.processTokenId = self.processToken.id;
+    self.fire('user-role-changed',obj);
   }
   /**
    * Fired when bpmn-xml is imported successfully

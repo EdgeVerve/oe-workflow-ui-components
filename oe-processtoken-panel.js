@@ -144,9 +144,7 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
               <oe-info label="Error" value={{_handleErrorMessage(processToken)}}></oe-info>
               </template>
               <template is="dom-if" if="[[_checkTask(processToken)]]">
-              <oe-combo label="User" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
-              <oe-combo label="User Role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
-              <paper-button raised on-tap="_submit"><oe-i18n-msg msgid="submit-wf-step">Submit</oe-i18n-msg></paper-button>
+              <paper-button raised onclick="modal.open()">Reassign Task</paper-button>
               </template>
               </div>
               <div class="card-action">
@@ -164,12 +162,6 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
 
   static get properties() {
     return {
-      userList: {
-        type: Array
-      },
-      roleList: {
-        type: Array
-      },
       processToken: {
         type: Object
       },
@@ -186,14 +178,6 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
       return true;
     }
     return false;
-  }
-  _submit(e){
-    var self = this;
-    var obj ={};
-    obj.user = self.shadowRoot.querySelectorAll('oe-combo')[0].value;
-    obj.role = self.shadowRoot.querySelectorAll('oe-combo')[1].value;
-    obj.processTokenId = self.processToken.id;
-    self.fire('user-role-changed',obj);
   }
   _checkTask(processToken){
     var res = false;
