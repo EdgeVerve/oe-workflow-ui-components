@@ -93,6 +93,12 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       },
       zoomLevel: {
         type: Number
+      },
+      userList: {
+        type: Array
+      },
+      roleList: {
+        type: Array
       }
     };
   }
@@ -159,6 +165,10 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
           if (token && self.processInstance && self.tokenViewMode === 'sidepanel') {
             self._tokenViewer.set('processToken', token);
             self._tokenViewer.set('processInstanceId', self.processInstance.id);
+            if(self.userList && self.roleList){
+              self._tokenViewer.set('userList',self.userList);
+              self._tokenViewer.set('roleList',self.roleList);
+            }
             self.$.sidepanel.style.display = 'inline';
           }
         }

@@ -7,6 +7,8 @@ import "@polymer/iron-icon/iron-icon.js";
 import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
+import "oe-input/oe-json-input.js";
+import "oe-combo/oe-combo.js";
 import "oe-info/oe-info.js";
 import 'oe-i18n-msg/oe-i18n-msg.js';
 
@@ -30,24 +32,126 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
       }
       .left-bar {
         border-left: 1px solid var(--divider-color);
-        padding-left: 10px;
+        padding: 0 10px;
         height: 100%;
       }
       .fullsize {
         height: 100%;
         width: 100%;
       }
+      .custom-class:hover {
+        --border-color: black;
+        --label-color: black;
+      }
+
+      .custom-class[invalid] {
+        --border-thick: 2px;
+        --border-color: red;
+        --label-color: red;
+
+        --paper-input-char-counter: {
+          visibility: hidden;
+
+        }
+      }
+
+      .custom-class[focused]:not([invalid]) {
+        caret-color: blue;
+        --border-thick: 2px;
+        --border-color: blue;
+        --label-color: blue;
+      }
+
+      .custom-class {
+        --border-thick: 1px;
+        --border-color: #828282c9;
+        --label-color: #828282c9;
+
+        --paper-input-container: {
+          margin-bottom: 16px;
+          margin-top: 8px;
+          border-width: 0px;
+          box-shadow: 0px 0px 0px var(--border-thick) var(--border-color);
+          border-radius: 4px;
+          padding: 0px 0px 0px 5px;
+          box-sizing: border-box;
+        }
+
+        --iron-autogrow-textarea: {
+          height: 150px;
+          padding: 5px 3px 1px 7px;
+        }
+
+        --paper-font-caption: {
+          position: absolute;
+        }
+
+        --paper-input-container-label-floating: {
+          z-index: 2;
+          top: 8px;
+          padding-top: 0px !important;
+          display: flex;
+          background: #FFF;
+
+        }
+
+        --paper-input-container-underline: {
+          display: none;
+        }
+
+        --paper-input-container-underline-focus: {
+          display: none;
+        }
+
+        --paper-input-container-disabled: {
+          border: 1px dotted #212121;
+          border-radius: 4px;
+          padding: 3px;
+          box-sizing: border-box;
+
+        }
+
+        --oe-label-mixin: {
+          color: var(--label-color);
+          padding: 4px 4px 0px 4px;
+          margin-left: 4px;
+          width: auto;
+        }
+
+        --oe-required-mixin: {
+          color: #FF9800;
+        }
+
+        --oe-input-error: {
+          padding-top: 2px;
+          padding-left: 8px;
+          font-size: 12px;
+        }
+
+        --oe-input-char-counter: {
+          padding-top: 2px;
+          font-size: 12px;
+        }
+      }
     </style>
-    <div class="layout vertical flex left-bar fullsize">
+    <div class="layout vertical flex left-bar">
             <h3>[[processToken.name]]</h3>
             <div class="card-content layout vertical flex">
               <oe-info label="Start" type="timestamp" value={{processToken.startTime}}></oe-info>
-              <oe-info label="End" type="timestamp" value={{processToken.endTime}}></oe-info>
+              <oe-info label="End" type="timestamp" hidden$={{_checkStatus(processToken.status)}} value={{processToken.endTime}}></oe-info>
               <oe-info label="Status" value={{processToken.status}}></oe-info>
-              <oe-info label="Error" hidden$={{!processToken.error.message}} value={{processToken.error.message}}></oe-info>
-            </div>
-            <div class="card-action">
-              <template is="dom-if" if="[[_hasFailed(processToken)]]">
+              <template is="dom-if" if="[[_showError(processToken)]]">
+              <oe-info label="Error" value={{_handleErrorMessage(processToken)}}></oe-info>
+              </template>
+              <template is="dom-if" if="[[_checkTask(processToken)]]">
+              <oe-combo label="User" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
+              <oe-combo label="User Role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
+              <paper-button raised on-tap="_submit"><oe-i18n-msg msgid="submit-wf-step">Submit</oe-i18n-msg></paper-button>
+              </template>
+              </div>
+              <div class="card-action">
+                <template is="dom-if" if="[[_hasFailed(processToken)]]">
+                <oe-json-input class="custom-class" label="Update process variable" required value={{data}}></oe-json-input>
                 <paper-button raised on-tap="_rerun"><oe-i18n-msg msgid="retry-wf-step">Retry</oe-i18n-msg></paper-button>
               </template>
             </div>
@@ -60,15 +164,64 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
 
   static get properties() {
     return {
+      userList: {
+        type: Array
+      },
+      roleList: {
+        type: Array
+      },
       processToken: {
         type: Object
       },
       processInstanceId: {
         type: String
+      },
+      data: {
+        type: String
       }
     };
   }
-
+  _showError(processToken){
+    if(processToken.status === 'failed' && processToken.error){
+      return true;
+    }
+    return false;
+  }
+  _submit(e){
+    var self = this;
+    var obj ={};
+    obj.user = self.shadowRoot.querySelectorAll('oe-combo')[0].value;
+    obj.role = self.shadowRoot.querySelectorAll('oe-combo')[1].value;
+    obj.processTokenId = self.processToken.id;
+    self.fire('user-role-changed',obj);
+  }
+  _checkTask(processToken){
+    var res = false;
+    if(processToken.status === 'pending' || processToken.status === 'running'){
+     if(processToken.isUserTask){
+        res = true;
+     }
+    }
+    return res;
+  }
+  _checkStatus(status){
+    if(status === 'pending' || status === 'running'){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  _handleErrorMessage(processToken){
+    if(processToken.error){
+      if(processToken.error.statusCode){
+        return processToken.error.statusMessage;
+      }
+      else{
+        return processToken.error.message;
+      }
+    }
+  }
   _hasFailed(processToken) {
     return (processToken && processToken.status === 'failed');
   }
@@ -85,7 +238,8 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
     if (processToken && processToken.status === 'failed') {
       self.fire('oe-workflow-rerun', {
         processInstanceId: self.processInstanceId,
-        processToken: self.processToken
+        processToken: self.processToken,
+        data: self.data
       });
     }
   }

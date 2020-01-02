@@ -20,6 +20,7 @@
     "bpmn-js": "6.1.1",
     "fakerest": "2.1.0",
     "oe-ajax": "git+http://evgit/oecloud.io/oe-ajax.git#master",
+    "oe-combo": "git+http://evgit/oecloud.io/oe-combo.git#master",
     "oe-data-table": "git+http://evgit/oecloud.io/oe-data-table.git#master",
     "oe-i18n-msg": "git+http://evgit/oecloud.io/oe-i18n-msg.git#master",
     "oe-info": "git+http://evgit/oecloud.io/oe-info.git#master",

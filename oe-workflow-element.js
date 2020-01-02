@@ -16,7 +16,7 @@ import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
 import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
 import '@polymer/paper-material/paper-material.js';
 /**
- * ### oe-workflow-dashboard 
+ * ### oe-workflow-element 
  * Display workflow instances with main process details.
  * 
  * @customElement
@@ -24,9 +24,9 @@ import '@polymer/paper-material/paper-material.js';
  * 
  * @appliesMixin OECommonMixin
  * @appliesMixin OEAjaxMixin
- * @demo demo/demo-oe-workflow-dashboard.html
+ * @demo demo/demo-oe-workflow-element.html
  */
-class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
+class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   static get template() {
     return html`
     <style include="iron-flex iron-flex-alignment">
@@ -90,44 +90,42 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
             </div>
             <div>
             <template is="dom-if" if=[[!_flag]]>
-            <span class="pad">Complete {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}</span>
-            <span class="pad">Pending {{_getStatus(workflow.workflowInstances,"running",workflow.name)}}</span>
-            <span class="pad">Failed {{_getStatus(workflow.workflowInstances,"failed",workflow.name)}}</span> 
+            <span class="pad">Pending {{_getStatus(workflow.workflowInstances,"running")}}</span>
+            <span class="pad">Failed {{_getStatus(workflow.workflowInstances,"failed")}}</span> 
             </template>
-            
-           
             <template is="dom-if" if=[[_flag]]>
-            <span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete",workflow.name)}}</span>
-            <span class="pad">Min {{_getTimeAnalytics(workflow.workflowInstances,"min",workflow.name)}}</span>
-            <span class="pad">Max {{_getTimeAnalytics(workflow.workflowInstances,"max",workflow.name)}}</span>
-            <span class="pad">Avg {{_getTimeAnalytics(workflow.workflowInstances,"avg",workflow.name)}}</span> 
+            <span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete")}}</span>
+            <span class="pad">Min {{_getTimeAnalytics(workflow.workflowInstances,"min")}}</span>
+            <span class="pad">Max {{_getTimeAnalytics(workflow.workflowInstances,"max")}}</span>
+            <span class="pad">Avg {{_getTimeAnalytics(workflow.workflowInstances,"avg")}}</span> 
             </template>
             </div>
           </div>
           </paper-item>
           <iron-collapse id="collapse" data-collapse-def-id$=[[workflow.id]]>
           <template is="dom-if" if=[[!_flag]]> 
-          <template is="dom-repeat" items="{{_checkProcess(workflow.name,workflow.workflowInstances)}}" as="process">
+          <template is="dom-repeat" items="{{checkCompletedProcess(workflow.workflowInstances)}}" as="instance">
               <paper-material elevation="1" class="pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
-                    <oe-info label="Instance Id" value={{process._inst}}></oe-info>
-                    <oe-info label="Status" value={{process._status}}></oe-info>
-                    <oe-info label="StartTime" type="timestamp" value={{_getTime(process._processTokens)}}></oe-info>
-                    <oe-info label="Process Id" value={{process.id}}></oe-info>
-                    <template is="dom-if" if=[[_checkSatusPending(process._status)]]>
-                    <oe-info label="EndTime" type="timestamp" value={{_getEndTime(process._processTokens)}}></oe-info>
-                    <template is="dom-if" if=[[_getErrorMessage(process._processTokens,process._status)]]>
-                      <oe-info label="Error" value={{_getErrorMessage(process._processTokens)}}></oe-info>
+                    <oe-info label="Instance Id" value={{instance.id}}></oe-info>
+                    <oe-info label="Status" value={{instance.status}}></oe-info>
+                    <oe-info label="StartTime" type="timestamp" value={{instance.startTime}}></oe-info>
+                    <oe-info label="Process Id" value={{instance.processId}}></oe-info>
+                    <oe-info label="Process State" value={{instance.state}}></oe-info>
+                    <template is="dom-if" if=[[_checkSatusPending(instance.status)]]>
+                    <oe-info label="EndTime" type="timestamp" value={{instance.endTime}}></oe-info>
+                    <template is="dom-if" if=[[instance.error]]>
+                      <oe-info label="Error" value={{_getErrorMessage(instance.error)}}></oe-info>
                     </template>
                 </template>
               </paper-material>
             </template>
             </template>
             <template is="dom-if" if=[[_flag]]>
-            <template is="dom-repeat" items="{{ _checkProcessAnalytics(workflow.name,workflow.workflowInstances)}}" as="process" filter="{{_filter(_filterVal)}}">
+            <template is="dom-repeat" items="{{_checkProcessAnalytics(workflow.workflowInstances)}}" as="instance">
             <paper-material elevation="1" class="pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
-              <oe-info label="StartTime" type="timestamp" value={{_getTime(process._processTokens)}}></oe-info>
-              <oe-info label="EndTime" type="timestamp" value={{_getEndTime(process._processTokens)}}></oe-info>
-              <oe-info label="Time taken" value={{_calculateTime(process._processTokens)}}></oe-info>
+              <oe-info label="StartTime" type="timestamp" value={{instance.startTime}}></oe-info>
+              <oe-info label="EndTime" type="timestamp" value={{instance.startTime}}></oe-info>
+              <oe-info label="Time taken" value={{_calculateTime(instance)}}></oe-info>
               </paper-material>
         </template>
         </template>
@@ -137,7 +135,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     </div>`;
   }
   static get is() {
-    return "oe-workflow-dashboard";
+    return "oe-workflow-element";
   }
 
   static get properties() {
@@ -181,7 +179,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         type: Boolean,
         value: false
       },
-      _flagName:{
+      _flagName: {
         type: String
       }
     };
@@ -219,14 +217,13 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @param {string} status status of process Instance.
    * @return {string} error message.
    */
-  _getErrorMessage(processTokens, status) {
+  _getErrorMessage(error) {
     var self = this;
-    if (status == "failed") {
-      Object.keys(processTokens).forEach(function (tokenId) {
-        if (processTokens[tokenId].error) {
-          self.errorMessage = processTokens[tokenId].error.message;
-        }
-      });
+    if (error.statusCode) {
+      self.errorMessage = error.statusMessage;
+    }
+    else {
+      self.errorMessage = error.message;
     }
     return self.errorMessage;
   }
@@ -234,11 +231,11 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     var self = this;
     if (self._flag) {
       self._flag = false;
-      self.set('_flagName','Analytics');
+      self.set('_flagName', 'Analytics');
     }
     else if (!self._flag) {
       self._flag = true;
-      self.set('_flagName','Instances');
+      self.set('_flagName', 'Instances');
     }
   }
   /**
@@ -248,7 +245,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    */
   _instanceClick(event) {
     this.async(function () {
-      this.fire('oe-workflow-instance', event.model.process);
+      this.fire('oe-workflow-instance', event.model.instance);
     });
 
   }
@@ -276,11 +273,20 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   * @param {proctoken} holds processTokens.
   * @return {String}.
   */
-
-  _calculateTime(proctoken) {
+  _checkStatus(process) {
+    var status = process._status;
+    var procToken = process._processTokens;
+    Object.keys(procToken).forEach(function (tokenId) {
+      if (procToken[tokenId].status === 'failed') {
+        status = 'failed';
+      }
+    })
+    return status;
+  }
+  _calculateTime(instance) {
     var self = this;
-    var stTime = self._getTime(proctoken);
-    var edTime = self._getEndTime(proctoken);
+    var stTime = instance.startTime;
+    var edTime = instance.endTime;
     if (stTime && edTime) {
 
       var date1_ms = (new Date(stTime)).getTime();
@@ -303,15 +309,12 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @param {Array} processInstance Array Processes of workflow Instance. 
    * @return {Array} complete processes.
    */
-  _checkProcessAnalytics(name, workflowInst) {
+  _checkProcessAnalytics(workflowInst) {
     var completeProcess = [];
     workflowInst.forEach(function (instance) {
-      instance.processes.forEach(function (proc) {
-        if (proc.processDefinitionName === name && proc._status === 'complete') {
-          proc._inst = instance.id;
-          completeProcess.push(proc);
-        }
-      });
+      if(instance.status === 'complete'){
+        completeProcess.push(instance);
+      }
     });
     return completeProcess;
 
@@ -343,24 +346,24 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     var defId = event.currentTarget.getAttribute('data-def-id');
     var ironCol = self.shadowRoot.querySelector('[data-collapse-def-id="' + defId + '"]');
     ironCol.toggle();
-    this.addEventListener('tap',function(e){
+    this.addEventListener('tap', function (e) {
       e.stopPropagation();
     });
   }
-  _xhrget(url, mime, callback){
-    if(!callback && typeof mime === 'function'){
+  _xhrget(url, mime, callback) {
+    if (!callback && typeof mime === 'function') {
       callback = mime;
       mime = 'json';
     }
     var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', function(evt){
-      if(evt.target.status >= 200 && evt.target.status < 300){
+    oReq.addEventListener('load', function (evt) {
+      if (evt.target.status >= 200 && evt.target.status < 300) {
         callback(null, evt.target.response);
       } else {
         callback(evt.target.statusText, null);
       }
     });
-    oReq.addEventListener('error', function(err){
+    oReq.addEventListener('error', function (err) {
       callback(err);
     });
 
@@ -373,21 +376,63 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @param {Object} parent .
    */
   _getWorkFlowInstance(parent) {
-    // var filter = {
-    //   "include":
-    //   {
-    //     "workflowInstances": ["processes"]
-    //   }
-    // };
-    // var Url = self.restUrl + '/WorkflowDefinitions';
-    // self.makeAjaxCall(Url, 'get', null, null, { "filter": filter }, 'json', function (err, response) {
-    //   var res = response;
-    //   if (res) {
-      var self = this;
-      self._xhrget('WorkflowDefinitions', function(err, data){
-          self.workflowDefName = data;
-      });
-   // });
+    var self = this;
+    var filter = {
+      "include":
+      {
+        "workflowInstances": ["processes"]
+      }
+    };
+    var Url = self.restUrl + '/WorkflowDefinitions';
+    self.makeAjaxCall(Url, 'get', null, null, { "filter": filter }, 'json', function (err, response) {
+      var wfDefns = response;
+      if (wfDefns) {
+    var response = [];
+    wfDefns.forEach(function (wf) {
+      var wfdef = {};
+      wfdef.name = wf.name;
+      wfdef.id = wf.id;
+      wfdef.workflowInstances = [];
+      wf.workflowInstances.forEach(function (inst) {
+        var instance = {};
+        instance.id = inst.id;
+        inst.processes.forEach(function (proc) {
+          var currentState;
+          var timeArray = [];
+          var endTimeArray = [];
+          var error = {};
+          var status = proc._status;
+          if(proc.processDefinitionName === wfdef.name){
+            instance.processId = proc.id;
+          var procToken = proc._processTokens;
+          Object.keys(procToken).forEach(function (tokenId) {
+            timeArray.push(procToken[tokenId].startTime);
+            endTimeArray.push(procToken[tokenId].endTime);
+            if (procToken[tokenId].status === 'failed') {
+              status = 'failed';
+              error = procToken[tokenId].error;
+            }
+            currentState = procToken[tokenId].name;
+          });
+        }
+          var st = timeArray.sort();
+          var et = endTimeArray.sort();
+          var len = et.length;
+          instance.startTime = st[0];
+          instance.endTime = et[(len-1)];
+          instance.status = status;
+          instance.error = error;
+          instance.state = currentState;
+        })
+        wfdef.workflowInstances.push(instance);
+      })
+      response.push(wfdef);
+    });
+    // self._xhrget('WorkflowDefinitions', function (err, data) {
+      self.workflowDefName = response;
+      }
+    });
+    // });
   }
   /**
    * Connected call back methos to invoke the _getWorkFlowInstance() method.
@@ -395,8 +440,17 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   connectedCallback() {
     super.connectedCallback();
     this._flag = false;
-    this.set('_flagName','Analytics');
+    this.set('_flagName', 'Analytics');
     this._getWorkFlowInstance();
+  }
+  checkCompletedProcess(workflowInst){
+    var instanceArray = [];
+    workflowInst.forEach(function (instance) {
+      if(instance.status !== 'complete'){
+        instanceArray.push(instance);
+      }
+    });
+    return instanceArray;
   }
   /**
    * To display the count of failed,pending and complete processes.
@@ -405,17 +459,15 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    * @param {string} name workflow definition name.
    * @return {number} .
    */
-  _getStatus(workflowInst, status, name) {
+  _getStatus(workflowInst, status) {
     var statusArray = [];
     var com = 0;
     var fail = 0;
     var run = 0;
     workflowInst.forEach(function (instance) {
-      instance.processes.forEach(function (proc) {
-        if (proc.processDefinitionName === name) {
-          statusArray.push(proc._status);
-        }
-      });
+          if (instance.status) {
+            statusArray.push(instance.status);
+          }
     });
     statusArray.forEach(function (ele) {
       if (ele === "complete") {
@@ -452,10 +504,9 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     var result;
     self.mlsArray = [];
     workflowInst.forEach(function (instance) {
-      instance.processes.forEach(function (proc) {
-        if (proc.processDefinitionName === name && proc._status === 'complete') {
-          var stTime = self._getTime(proc._processTokens);
-          var edTime = self._getEndTime(proc._processTokens);
+        if (instance.status === 'complete') {
+          var stTime = instance.startTime;
+          var edTime = instance.endTime;
           var date1_ms = (new Date(stTime)).getTime();
           var date2_ms = (new Date(edTime)).getTime();
 
@@ -463,7 +514,6 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
           self.mlsArray.push(diff_ms);
 
         }
-      });
     });
     if (status === 'min' && self.mlsArray.length != 0) {
       var minimum = Math.min.apply(Math, self.mlsArray);
@@ -501,23 +551,5 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     if (seconds < 10) { seconds = "0" + seconds; }
     return hours + ':' + minutes + ':' + seconds;
   }
-  /**
-  * To display the count of failed,pending and complete processes.
-  * @param {Array} workflowInst Array of workflow Instances.
-  * @param {string} status status of process instance.
-  * @param {string} name workflow definition name.
-  * @return {number} .
-  */
-  _getStatusAnalytics(workflowInst, status, name) {
-    var statusArray = [];
-    workflowInst.forEach(function (instance) {
-      instance.processes.forEach(function (proc) {
-        if (proc.processDefinitionName === name && proc._status === 'complete') {
-          statusArray.push(proc._status);
-        }
-      });
-    });
-    return statusArray.length;
-  }
 }
-window.customElements.define(oeWorkflowDashboard.is, oeWorkflowDashboard);
+window.customElements.define(oeWorkflowElement.is, oeWorkflowElement);
