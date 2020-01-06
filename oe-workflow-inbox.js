@@ -309,7 +309,7 @@ class OeWorkflowInbox extends OECommonMixin(PolymerElement) {
           return [];
         }
       }
-    }
+    };
   }
 
   _init() {

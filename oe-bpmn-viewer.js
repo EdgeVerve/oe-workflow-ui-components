@@ -80,7 +80,7 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       <paper-dialog id="modal" modal>
       <oe-combo label="User" id="user" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
       <oe-combo label="User Role" id="role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
-      <paper-button raised id="cancel" on-tap="_cancel" dialog-confirm><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
+      <paper-button raised id="cancel" dialog-confirm><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
       <paper-button raised id="reassign" on-tap="_submit" dialog-confirm><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
       </paper-dialog>
       <div class="fullsize" id="canvas" on-track="_handleTrack"></div>
@@ -175,15 +175,26 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         var bpmnId = e.element.id;
         var type = e.element.type;
         if (type && bpmnId) {
-          var token = (self.processInstance && self.processInstance._processTokens) ? Object.values(self.processInstance._processTokens).find(function (v) {
-            return v.bpmnId === bpmnId;
-          }) : undefined;
+          var tokenArray = [];
+          var token = undefined;
+          if(self.processInstance && self.processInstance._processTokens){
+            var procToken = self.processInstance._processTokens;
+            Object.keys(procToken).forEach(function (tokenId) {
+              if(procToken[tokenId].bpmnId === bpmnId){
+                tokenArray.push(procToken[tokenId]);
+              }
+            });
+          }
           self.fire('oe-bpmn-viewer-selection', {
             type: type,
             bpmnId: bpmnId,
             processInstance: self.processInstance,
             processToken: token
           });
+          if(tokenArray.length !== 0){
+            var length = tokenArray.length;
+            token = tokenArray[length-1];
+          }
           if (token && self.processInstance && self.tokenViewMode === 'sidepanel') {
             self._tokenViewer.set('processToken', token);
             self._tokenViewer.set('processInstanceId', self.processInstance.id);
@@ -197,7 +208,7 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
     self.addEventListener('reassign-task',function(event){
       self.set('processTokenId',event.detail);
       self.$.modal.open();
-    })
+    });
   }
   _submit(e){
     var self = this;
@@ -218,7 +229,6 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
    * Fired when bpmn-xml load fails.
    *
    * @event oe-bpmn-viewer-load-failed
-   * @param {Error} err event.detail points to the Error object
    * @param {string} bpmnXml .
    */
   _bpmnXmlChanged(bpmnXml) {

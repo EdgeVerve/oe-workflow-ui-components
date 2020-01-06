@@ -16,7 +16,7 @@ import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
 import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
 import '@polymer/paper-material/paper-material.js';
 /**
- * ### oe-workflow-element
+ * ### oe-workflow-dashboard 
  * Display workflow instances with main process details.
  * 
  * @customElement
@@ -24,9 +24,9 @@ import '@polymer/paper-material/paper-material.js';
  * 
  * @appliesMixin OECommonMixin
  * @appliesMixin OEAjaxMixin
- * @demo demo/demo-oe-workflow-element.html
+ *
  */
-class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
+class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   static get template() {
     return html`
     <style include="iron-flex iron-flex-alignment">
@@ -135,7 +135,7 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     </div>`;
   }
   static get is() {
-    return "oe-workflow-element";
+    return "oe-workflow-dashboard";
   }
 
   static get properties() {
@@ -554,4 +554,4 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     return hours + ':' + minutes + ':' + seconds;
   }
 }
-window.customElements.define(oeWorkflowElement.is, oeWorkflowElement);
+window.customElements.define(oeWorkflowDashboard.is, oeWorkflowDashboard);
