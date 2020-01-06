@@ -4,7 +4,9 @@ import 'bpmn-js/dist/bpmn-viewer.development.js';
 import './oe-processtoken-overlay.js';
 import './oe-processtoken-panel.js';
 import "@polymer/iron-icon/iron-icon.js";
+import '@polymer/paper-dialog/paper-dialog.js';
 import "@polymer/iron-icons/iron-icons.js";
+import "oe-combo/oe-combo.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
 import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
@@ -62,14 +64,26 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         width: 100%;
         height: 100%;
       }
+      #reassign {
+        height: 40px;
+        margin-left: 25px;
+      }
+      #cancel{
+        height: 40px;
+        margin-left: 25px;
+      }
+      #modal {
+        width: 380px;
+      }
     </style>
     <div class="layout horizontal flex fullsize">
-      <div class="fullsize" id="canvas" on-track="_handleTrack"></div>
       <paper-dialog id="modal" modal>
-      <oe-combo label="User" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
-      <oe-combo label="User Role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
-      <paper-button raised on-tap="_submit"><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
+      <oe-combo label="User" id="user" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
+      <oe-combo label="User Role" id="role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
+      <paper-button raised id="cancel" on-tap="_cancel" dialog-confirm><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
+      <paper-button raised id="reassign" on-tap="_submit" dialog-confirm><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
       </paper-dialog>
+      <div class="fullsize" id="canvas" on-track="_handleTrack"></div>
       <div id="sidepanel"></div>
     </div>`;
   }
@@ -104,6 +118,9 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       },
       roleList: {
         type: Array
+      },
+      processTokenId:{
+        type: String
       }
     };
   }
@@ -177,14 +194,20 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         self.$.sidepanel.style.display = 'none';
       }
     });
+    self.addEventListener('reassign-task',function(event){
+      self.set('processTokenId',event.detail);
+      self.$.modal.open();
+    })
   }
   _submit(e){
     var self = this;
     var obj ={};
-    obj.user = self.shadowRoot.querySelectorAll('oe-combo')[0].value;
-    obj.role = self.shadowRoot.querySelectorAll('oe-combo')[1].value;
-    obj.processTokenId = self.processToken.id;
+    obj.user = self.$.user.value;
+    obj.role = self.$.role.value;
+    obj.processTokenId = self.processTokenId;
     self.fire('user-role-changed',obj);
+    self.$.user.__resetComponent();
+    self.$.role.__resetComponent();
   }
   /**
    * Fired when bpmn-xml is imported successfully

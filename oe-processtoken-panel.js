@@ -8,7 +8,6 @@ import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
 import "oe-input/oe-json-input.js";
-import "oe-combo/oe-combo.js";
 import "oe-info/oe-info.js";
 import 'oe-i18n-msg/oe-i18n-msg.js';
 
@@ -29,6 +28,10 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
         display: block;
         min-width: 200px;
         height: 100%;
+      }
+      #taskButton{
+        height: 32px;
+        margin-top: 15px;
       }
       .left-bar {
         border-left: 1px solid var(--divider-color);
@@ -69,7 +72,7 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
 
         --paper-input-container: {
           margin-bottom: 16px;
-          margin-top: 8px;
+          margin-top: 15px;
           border-width: 0px;
           box-shadow: 0px 0px 0px var(--border-thick) var(--border-color);
           border-radius: 4px;
@@ -144,12 +147,12 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
               <oe-info label="Error" value={{_handleErrorMessage(processToken)}}></oe-info>
               </template>
               <template is="dom-if" if="[[_checkTask(processToken)]]">
-              <paper-button raised onclick="modal.open()">Reassign Task</paper-button>
+              <paper-button raised id="taskButton" on-tap="_reassignTask">Reassign Task</paper-button>
               </template>
               </div>
               <div class="card-action">
                 <template is="dom-if" if="[[_hasFailed(processToken)]]">
-                <oe-json-input class="custom-class" label="Update process variable" required value={{data}}></oe-json-input>
+                <oe-json-input always-float-label class="custom-class" label="Update process variable" required value={{data}}></oe-json-input>
                 <paper-button raised on-tap="_rerun"><oe-i18n-msg msgid="retry-wf-step">Retry</oe-i18n-msg></paper-button>
               </template>
             </div>
@@ -172,6 +175,9 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
         type: String
       }
     };
+  }
+  _reassignTask(e){
+    this.fire('reassign-task',this.processToken.id);
   }
   _showError(processToken){
     if(processToken.status === 'failed' && processToken.error){
