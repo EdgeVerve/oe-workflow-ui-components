@@ -185,16 +185,16 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
               }
             });
           }
+          if(tokenArray.length !== 0){
+            var length = tokenArray.length;
+            token = tokenArray[length-1];
+          }
           self.fire('oe-bpmn-viewer-selection', {
             type: type,
             bpmnId: bpmnId,
             processInstance: self.processInstance,
             processToken: token
-          });
-          if(tokenArray.length !== 0){
-            var length = tokenArray.length;
-            token = tokenArray[length-1];
-          }
+          });       
           if (token && self.processInstance && self.tokenViewMode === 'sidepanel') {
             self._tokenViewer.set('processToken', token);
             self._tokenViewer.set('processInstanceId', self.processInstance.id);
@@ -209,7 +209,7 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       self.set('processTokenId',event.detail);
       self.$.modal.open();
     });
-  }
+  } 
   _submit(e){
     var self = this;
     var obj ={};

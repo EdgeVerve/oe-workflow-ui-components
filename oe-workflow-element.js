@@ -157,7 +157,8 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         type: Array,
         value: function () {
           return [];
-        }
+        },
+        notify: true
       },
       /**
        * String holds the error message of failed process.
