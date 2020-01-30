@@ -4,7 +4,9 @@ import 'bpmn-js/dist/bpmn-viewer.development.js';
 import './oe-processtoken-overlay.js';
 import './oe-processtoken-panel.js';
 import "@polymer/iron-icon/iron-icon.js";
+import '@polymer/paper-dialog/paper-dialog.js';
 import "@polymer/iron-icons/iron-icons.js";
+import "oe-combo/oe-combo.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
 import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
@@ -62,8 +64,25 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         width: 100%;
         height: 100%;
       }
+      #reassign {
+        height: 40px;
+        margin-left: 25px;
+      }
+      #cancel{
+        height: 40px;
+        margin-left: 25px;
+      }
+      #modal {
+        width: 380px;
+      }
     </style>
     <div class="layout horizontal flex fullsize">
+      <paper-dialog id="modal" modal>
+      <oe-combo label="User" id="user" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
+      <oe-combo label="User Role" id="role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
+      <paper-button raised id="cancel" dialog-confirm><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
+      <paper-button raised id="reassign" on-tap="_submit" dialog-confirm><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
+      </paper-dialog>
       <div class="fullsize" id="canvas" on-track="_handleTrack"></div>
       <div id="sidepanel"></div>
     </div>`;
@@ -93,6 +112,15 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       },
       zoomLevel: {
         type: Number
+      },
+      userList: {
+        type: Array
+      },
+      roleList: {
+        type: Array
+      },
+      processTokenId:{
+        type: String
       }
     };
   }
@@ -147,15 +175,26 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         var bpmnId = e.element.id;
         var type = e.element.type;
         if (type && bpmnId) {
-          var token = (self.processInstance && self.processInstance._processTokens) ? Object.values(self.processInstance._processTokens).find(function (v) {
-            return v.bpmnId === bpmnId;
-          }) : undefined;
+          var tokenArray = [];
+          var token = undefined;
+          if(self.processInstance && self.processInstance._processTokens){
+            var procToken = self.processInstance._processTokens;
+            Object.keys(procToken).forEach(function (tokenId) {
+              if(procToken[tokenId].bpmnId === bpmnId){
+                tokenArray.push(procToken[tokenId]);
+              }
+            });
+          }
+          if(tokenArray.length !== 0){
+            var length = tokenArray.length;
+            token = tokenArray[length-1];
+          }
           self.fire('oe-bpmn-viewer-selection', {
             type: type,
             bpmnId: bpmnId,
             processInstance: self.processInstance,
             processToken: token
-          });
+          });       
           if (token && self.processInstance && self.tokenViewMode === 'sidepanel') {
             self._tokenViewer.set('processToken', token);
             self._tokenViewer.set('processInstanceId', self.processInstance.id);
@@ -166,6 +205,20 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         self.$.sidepanel.style.display = 'none';
       }
     });
+    self.addEventListener('reassign-task',function(event){
+      self.set('processTokenId',event.detail);
+      self.$.modal.open();
+    });
+  } 
+  _submit(e){
+    var self = this;
+    var obj ={};
+    obj.user = self.$.user.value;
+    obj.role = self.$.role.value;
+    obj.processTokenId = self.processTokenId;
+    self.fire('user-role-changed',obj);
+    self.$.user.__resetComponent();
+    self.$.role.__resetComponent();
   }
   /**
    * Fired when bpmn-xml is imported successfully
@@ -176,7 +229,6 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
    * Fired when bpmn-xml load fails.
    *
    * @event oe-bpmn-viewer-load-failed
-   * @param {Error} err event.detail points to the Error object
    * @param {string} bpmnXml .
    */
   _bpmnXmlChanged(bpmnXml) {

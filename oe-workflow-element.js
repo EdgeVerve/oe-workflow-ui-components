@@ -16,7 +16,7 @@ import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
 import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
 import '@polymer/paper-material/paper-material.js';
 /**
- * ### oe-workflow-dashboard 
+ * ### oe-workflow-element
  * Display workflow instances with main process details.
  * 
  * @customElement
@@ -24,9 +24,9 @@ import '@polymer/paper-material/paper-material.js';
  * 
  * @appliesMixin OECommonMixin
  * @appliesMixin OEAjaxMixin
- *
+ * @demo demo/demo-oe-workflow-element.html
  */
-class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
+class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   static get template() {
     return html`
     <style include="iron-flex iron-flex-alignment">
@@ -135,7 +135,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     </div>`;
   }
   static get is() {
-    return "oe-workflow-dashboard";
+    return "oe-workflow-element";
   }
 
   static get properties() {
@@ -157,7 +157,8 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         type: Array,
         value: function () {
           return [];
-        }
+        },
+        notify: true
       },
       /**
        * String holds the error message of failed process.
@@ -554,4 +555,4 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     return hours + ':' + minutes + ':' + seconds;
   }
 }
-window.customElements.define(oeWorkflowDashboard.is, oeWorkflowDashboard);
+window.customElements.define(oeWorkflowElement.is, oeWorkflowElement);
