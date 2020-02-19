@@ -78,7 +78,7 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
     </style>
     <div class="layout horizontal flex fullsize">
       <paper-dialog id="modal" modal>
-      <oe-combo label="User" id="user" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
+     <oe-combo label="User" id="user" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
       <oe-combo label="User Role" id="role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
       <paper-button raised id="cancel" dialog-confirm><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
       <paper-button raised id="reassign" on-tap="_submit" dialog-confirm><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
@@ -194,7 +194,8 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
             bpmnId: bpmnId,
             processInstance: self.processInstance,
             processToken: token
-          });       
+          });
+         
           if (token && self.processInstance && self.tokenViewMode === 'sidepanel') {
             self._tokenViewer.set('processToken', token);
             self._tokenViewer.set('processInstanceId', self.processInstance.id);
@@ -209,7 +210,9 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       self.set('processTokenId',event.detail);
       self.$.modal.open();
     });
-  } 
+   
+  }
+ 
   _submit(e){
     var self = this;
     var obj ={};

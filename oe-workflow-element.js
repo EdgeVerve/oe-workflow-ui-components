@@ -4,13 +4,16 @@ import 'oe-utils/date-utils.js';
 import 'oe-ajax/oe-ajax.js';
 import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/paper-item/paper-item.js';
+import '@polymer/paper-input/paper-input.js';
 import "@polymer/iron-icon/iron-icon.js";
 import '@polymer/paper-button/paper-button.js';
 import "@polymer/iron-icons/iron-icons.js";
+import '@polymer/paper-icon-button/paper-icon-button.js';
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
 import '@polymer/iron-collapse/iron-collapse.js';
 import 'oe-info/oe-info.js';
+import 'oe-ui-misc/oe-control-switcher.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
 import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
@@ -77,23 +80,41 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     iron-collapse {
       outline:none;
     }
+    .icon-button {
+      margin-top: 18px;
+      padding: 0px 5px;
+    }
+    .type {
+      padding: 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
     </style>
-    <div class="layout horizontal fullsize" id="oedashboard">
+    <div id="oedashboard">
+    <div class="center horizontal justified layout fullsize">
+      <label class="type">{{_flagName}}</label>
+    <div class="center horizontal justified layout">
+    <paper-input label="Enter Workflow Name" value={{searchVal}}>
+      <paper-icon-button slot="suffix" icon="search"></paper-icon-button>
+    </paper-input>
+      <paper-icon-button icon="refresh" on-tap="_getWorkFlowInstance" class="icon-button"></paper-icon-button>
+      </div>
+      </div>
+      <div>
       <paper-listbox class="fullsize">
-      <paper-button on-tap="_changeVal" toggles raised class="green pad">{{_flagName}}</paper-button>
-        <template is="dom-repeat" items="{{workflowDefName}}" as="workflow">
+        <template is="dom-repeat" items="{{workflowDefName}}" as="workflow" filter="{{isDefName(searchVal)}}">
           <paper-item class="box" on-tap="_setFlag" data-def-id$=[[workflow.id]]>
           <div class="layout horizontal center justified fullsize font" style="cursor:pointer">
           <div class="labl" id="lbl">
-          <label>{{workflow.name}}</label>
+          <span>{{workflow.name}}</span>
           <paper-tooltip>{{workflow.name}}</paper-tooltip>
             </div>
             <div>
-            <template is="dom-if" if=[[!_flag]]>
+            <template is="dom-if" if=[[!flag]]>
             <span class="pad">Pending {{_getStatus(workflow.workflowInstances,"running")}}</span>
             <span class="pad">Failed {{_getStatus(workflow.workflowInstances,"failed")}}</span> 
             </template>
-            <template is="dom-if" if=[[_flag]]>
+            <template is="dom-if" if=[[flag]]>
             <span class="pad">Completed {{_getStatus(workflow.workflowInstances,"complete")}}</span>
             <span class="pad">Min {{_getTimeAnalytics(workflow.workflowInstances,"min")}}</span>
             <span class="pad">Max {{_getTimeAnalytics(workflow.workflowInstances,"max")}}</span>
@@ -103,7 +124,8 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
           </div>
           </paper-item>
           <iron-collapse id="collapse" data-collapse-def-id$=[[workflow.id]]>
-          <template is="dom-if" if=[[!_flag]]> 
+          <template is="dom-if" if=[[opened]]> 
+          <template is="dom-if" if=[[!flag]]> 
           <template is="dom-repeat" items="{{checkCompletedProcess(workflow.workflowInstances)}}" as="instance">
               <paper-material elevation="1" class="pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
                     <oe-info label="Instance Id" value={{instance.id}}></oe-info>
@@ -120,18 +142,20 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
               </paper-material>
             </template>
             </template>
-            <template is="dom-if" if=[[_flag]]>
+            <template is="dom-if" if=[[flag]]>
             <template is="dom-repeat" items="{{_checkProcessAnalytics(workflow.workflowInstances)}}" as="instance">
             <paper-material elevation="1" class="pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
               <oe-info label="StartTime" type="timestamp" value={{instance.startTime}}></oe-info>
-              <oe-info label="EndTime" type="timestamp" value={{instance.startTime}}></oe-info>
+              <oe-info label="EndTime" type="timestamp" value={{instance.endTime}}></oe-info>
               <oe-info label="Time taken" value={{_calculateTime(instance)}}></oe-info>
               </paper-material>
+        </template>
         </template>
         </template>
            </iron-collapse>
         </template>
       </paper-listbox>
+      </div>
     </div>`;
   }
   static get is() {
@@ -180,12 +204,20 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         type: Boolean,
         value: false
       },
-      _flag: {
+      flag: {
         type: Boolean,
-        value: false
+        value: false,
+        observer: '_changeVal'
+      },
+      searchVal: {
+        type: String
       },
       _flagName: {
         type: String
+      },
+      opened: {
+        type: Boolean,
+        value: false
       }
     };
   }
@@ -201,6 +233,13 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     else {
       return true;
     }
+  }
+  isDefName(searchVal) {
+    return function (workflow) {
+      if (!searchVal) return true;
+      if (!workflow) return false;
+      return (workflow.name && ~workflow.name.indexOf(searchVal));
+    };
   }
   /**
    * To get the startTime of Process Instance.
@@ -231,15 +270,13 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     }
     return self.errorMessage;
   }
-  _changeVal(event) {
+  _changeVal() {
     var self = this;
-    if (self._flag) {
-      self._flag = false;
-      self.set('_flagName', 'Analytics');
+    if (self.flag) {
+        self.set('_flagName','Completed Workflow Data');
     }
-    else if (!self._flag) {
-      self._flag = true;
-      self.set('_flagName', 'Instances');
+    else {
+      self.set('_flagName','Running and failed Workflow Data');
     }
   }
   /**
@@ -314,7 +351,7 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   _checkProcessAnalytics(workflowInst) {
     var completeProcess = [];
     workflowInst.forEach(function (instance) {
-      if(instance.status === 'complete'){
+      if (instance.status === 'complete') {
         completeProcess.push(instance);
       }
     });
@@ -348,6 +385,7 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     var defId = event.currentTarget.getAttribute('data-def-id');
     var ironCol = self.shadowRoot.querySelector('[data-collapse-def-id="' + defId + '"]');
     ironCol.toggle();
+    self.set('opened', true);
     this.addEventListener('tap', function (e) {
       e.stopPropagation();
     });
@@ -389,49 +427,49 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     self.makeAjaxCall(Url, 'get', null, null, { "filter": filter }, 'json', function (err, response) {
       var wfDefns = response;
       if (wfDefns) {
-    response = [];
-    wfDefns.forEach(function (wf) {
-      var wfdef = {};
-      wfdef.name = wf.name;
-      wfdef.id = wf.id;
-      wfdef.workflowInstances = [];
-      wf.workflowInstances.forEach(function (inst) {
-        var instance = {};
-        instance.id = inst.id;
-        inst.processes.forEach(function (proc) {
-          var currentState;
-          var timeArray = [];
-          var endTimeArray = [];
-          var error = {};
-          var status = proc._status;
-          if(proc.processDefinitionName === wfdef.name){
-            instance.processId = proc.id;
-          var procToken = proc._processTokens;
-          Object.keys(procToken).forEach(function (tokenId) {
-            timeArray.push(procToken[tokenId].startTime);
-            endTimeArray.push(procToken[tokenId].endTime);
-            if (procToken[tokenId].status === 'failed') {
-              status = 'failed';
-              error = procToken[tokenId].error;
-            }
-            currentState = procToken[tokenId].name;
+        response = [];
+        wfDefns.forEach(function (wf) {
+          var wfdef = {};
+          wfdef.name = wf.name;
+          wfdef.id = wf.id;
+          wfdef.workflowInstances = [];
+          wf.workflowInstances.forEach(function (inst) {
+            var instance = {};
+            instance.id = inst.id;
+            inst.processes.forEach(function (proc) {
+              var currentState;
+              var timeArray = [];
+              var endTimeArray = [];
+              var error = {};
+              var status = proc._status;
+              if (proc.processDefinitionName === wfdef.name) {
+                instance.processId = proc.id;
+                var procToken = proc._processTokens;
+                Object.keys(procToken).forEach(function (tokenId) {
+                  timeArray.push(procToken[tokenId].startTime);
+                  endTimeArray.push(procToken[tokenId].endTime);
+                  if (procToken[tokenId].status === 'failed') {
+                    status = 'failed';
+                    error = procToken[tokenId].error;
+                  }
+                  currentState = procToken[tokenId].name;
+                });
+              }
+              var st = timeArray.sort();
+              var et = endTimeArray.sort();
+              var len = et.length;
+              instance.startTime = st[0];
+              instance.endTime = et[(len - 1)];
+              instance.status = status;
+              instance.error = error;
+              instance.state = currentState;
+            });
+            wfdef.workflowInstances.push(instance);
           });
-        }
-          var st = timeArray.sort();
-          var et = endTimeArray.sort();
-          var len = et.length;
-          instance.startTime = st[0];
-          instance.endTime = et[(len-1)];
-          instance.status = status;
-          instance.error = error;
-          instance.state = currentState;
+          response.push(wfdef);
         });
-        wfdef.workflowInstances.push(instance);
-      });
-      response.push(wfdef);
-    });
-    // self._xhrget('WorkflowDefinitions', function (err, data) {
-      self.workflowDefName = response;
+        // self._xhrget('WorkflowDefinitions', function (err, data) {
+        self.workflowDefName = response;
       }
     });
     // });
@@ -441,16 +479,15 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
    */
   connectedCallback() {
     super.connectedCallback();
-    this._flag = false;
-    this.set('_flagName', 'Analytics');
-    if(this.auto){
-    this._getWorkFlowInstance();
+    this.flag = false;
+    if (this.auto) {
+      this._getWorkFlowInstance();
     }
   }
-  checkCompletedProcess(workflowInst){
+  checkCompletedProcess(workflowInst) {
     var instanceArray = [];
     workflowInst.forEach(function (instance) {
-      if(instance.status !== 'complete'){
+      if (instance.status !== 'complete') {
         instanceArray.push(instance);
       }
     });
@@ -469,9 +506,9 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     var fail = 0;
     var run = 0;
     workflowInst.forEach(function (instance) {
-          if (instance.status) {
-            statusArray.push(instance.status);
-          }
+      if (instance.status) {
+        statusArray.push(instance.status);
+      }
     });
     statusArray.forEach(function (ele) {
       if (ele === "complete") {
@@ -507,16 +544,16 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     var result;
     self.mlsArray = [];
     workflowInst.forEach(function (instance) {
-        if (instance.status === 'complete') {
-          var stTime = instance.startTime;
-          var edTime = instance.endTime;
-          var date1_ms = (new Date(stTime)).getTime();
-          var date2_ms = (new Date(edTime)).getTime();
+      if (instance.status === 'complete') {
+        var stTime = instance.startTime;
+        var edTime = instance.endTime;
+        var date1_ms = (new Date(stTime)).getTime();
+        var date2_ms = (new Date(edTime)).getTime();
 
-          diff_ms = date2_ms - date1_ms;
-          self.mlsArray.push(diff_ms);
+        diff_ms = date2_ms - date1_ms;
+        self.mlsArray.push(diff_ms);
 
-        }
+      }
     });
     if (status === 'min' && self.mlsArray.length != 0) {
       var minimum = Math.min.apply(Math, self.mlsArray);
