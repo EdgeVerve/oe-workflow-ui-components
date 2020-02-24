@@ -66,22 +66,28 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       }
       #reassign {
         height: 40px;
-        margin-left: 25px;
+        margin-left: 45px;
       }
       #cancel{
         height: 40px;
         margin-left: 25px;
       }
-      #modal {
-        width: 380px;
-      }
+     #modal {
+       width: 400px;
+     }
+     .combo {
+       width: 300px;
+       margin: 20px;
+     }
     </style>
     <div class="layout horizontal flex fullsize">
       <paper-dialog id="modal" modal>
-     <oe-combo label="User" id="user" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
+      <div class="combo">
+      <oe-combo label="User" id="user" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
       <oe-combo label="User Role" id="role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
-      <paper-button raised id="cancel" dialog-confirm><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
+      </div>
       <paper-button raised id="reassign" on-tap="_submit" dialog-confirm><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
+      <paper-button raised id="cancel" dialog-confirm><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
       </paper-dialog>
       <div class="fullsize" id="canvas" on-track="_handleTrack"></div>
       <div id="sidepanel"></div>
