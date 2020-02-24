@@ -4,19 +4,22 @@ import 'oe-utils/date-utils.js';
 import 'oe-ajax/oe-ajax.js';
 import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/paper-item/paper-item.js';
+import '@polymer/paper-input/paper-input.js';
 import "@polymer/iron-icon/iron-icon.js";
 import '@polymer/paper-button/paper-button.js';
 import "@polymer/iron-icons/iron-icons.js";
+import '@polymer/paper-icon-button/paper-icon-button.js';
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
 import '@polymer/iron-collapse/iron-collapse.js';
 import 'oe-info/oe-info.js';
+import 'oe-ui-misc/oe-control-switcher.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
 import { OEAjaxMixin } from 'oe-mixins/oe-ajax-mixin.js';
 import '@polymer/paper-material/paper-material.js';
 /**
- * ### oe-workflow-dashboard 
+ * ### oe-workflow-dashboard
  * Display workflow instances with main process details.
  * 
  * @customElement
@@ -24,7 +27,7 @@ import '@polymer/paper-material/paper-material.js';
  * 
  * @appliesMixin OECommonMixin
  * @appliesMixin OEAjaxMixin
- *
+ * @demo demo/demo-oe-workflow-dashboard.html
  */
 class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   static get template() {
@@ -77,11 +80,24 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     iron-collapse {
       outline:none;
     }
+    .icon-button {
+      margin-top: 18px;
+      padding: 0px 5px;
+    }
     </style>
-    <div class="layout horizontal fullsize" id="oedashboard">
+    <div id="oedashboard">
+    <div class="center horizontal justified layout fullsize">
+    <oe-control-switcher field-id="switch" id="switch" config='{"onLabel": "Running and Failed Workflow","onValue": "pending","offLabel": "Completed Workflow","offValue": "complete"}' on-oe-field-changed="_changeVal"></oe-control-switcher>
+    <div class="center horizontal justified layout">
+    <paper-input label="Enter Workflow Name" value={{searchVal}}>
+      <paper-icon-button slot="suffix" icon="search"></paper-icon-button>
+    </paper-input>
+      <paper-icon-button icon="refresh" on-tap="_getWorkFlowInstance" class="icon-button"></paper-icon-button>
+      </div>
+      </div>
+      <div>
       <paper-listbox class="fullsize">
-      <paper-button on-tap="_changeVal" toggles raised class="green pad">{{_flagName}}</paper-button>
-        <template is="dom-repeat" items="{{workflowDefName}}" as="workflow">
+        <template is="dom-repeat" items="{{workflowDefName}}" as="workflow" filter="{{isDefName(searchVal)}}">
           <paper-item class="box" on-tap="_setFlag" data-def-id$=[[workflow.id]]>
           <div class="layout horizontal center justified fullsize font" style="cursor:pointer">
           <div class="labl" id="lbl">
@@ -103,6 +119,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
           </div>
           </paper-item>
           <iron-collapse id="collapse" data-collapse-def-id$=[[workflow.id]]>
+          <template is="dom-if" if=[[opened]]> 
           <template is="dom-if" if=[[!_flag]]> 
           <template is="dom-repeat" items="{{checkCompletedProcess(workflow.workflowInstances)}}" as="instance">
               <paper-material elevation="1" class="pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
@@ -124,14 +141,16 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
             <template is="dom-repeat" items="{{_checkProcessAnalytics(workflow.workflowInstances)}}" as="instance">
             <paper-material elevation="1" class="pad2 layout-2x layout horizontal wrap workflowInstance" style="cursor:pointer" on-tap="_instanceClick">
               <oe-info label="StartTime" type="timestamp" value={{instance.startTime}}></oe-info>
-              <oe-info label="EndTime" type="timestamp" value={{instance.startTime}}></oe-info>
+              <oe-info label="EndTime" type="timestamp" value={{instance.endTime}}></oe-info>
               <oe-info label="Time taken" value={{_calculateTime(instance)}}></oe-info>
               </paper-material>
+        </template>
         </template>
         </template>
            </iron-collapse>
         </template>
       </paper-listbox>
+      </div>
     </div>`;
   }
   static get is() {
@@ -157,7 +176,8 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         type: Array,
         value: function () {
           return [];
-        }
+        },
+        notify: true
       },
       /**
        * String holds the error message of failed process.
@@ -183,8 +203,15 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         type: Boolean,
         value: false
       },
+      searchVal: {
+        type: String
+      },
       _flagName: {
         type: String
+      },
+      opened: {
+        type: Boolean,
+        value: false
       }
     };
   }
@@ -200,6 +227,13 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     else {
       return true;
     }
+  }
+  isDefName(searchVal){
+      return function(workflow) {
+        if (!searchVal) return true;
+        if (!workflow) return false;
+        return (workflow.name && ~workflow.name.indexOf(searchVal));
+      };
   }
   /**
    * To get the startTime of Process Instance.
@@ -232,13 +266,11 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   }
   _changeVal(event) {
     var self = this;
-    if (self._flag) {
-      self._flag = false;
-      self.set('_flagName', 'Analytics');
-    }
-    else if (!self._flag) {
+    if(event.detail.value === "complete"){
       self._flag = true;
-      self.set('_flagName', 'Instances');
+    }
+    else  if(event.detail.value === "pending"){ 
+      self._flag = false;
     }
   }
   /**
@@ -347,6 +379,7 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     var defId = event.currentTarget.getAttribute('data-def-id');
     var ironCol = self.shadowRoot.querySelector('[data-collapse-def-id="' + defId + '"]');
     ironCol.toggle();
+    self.set('opened',true);
     this.addEventListener('tap', function (e) {
       e.stopPropagation();
     });
@@ -441,10 +474,10 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
   connectedCallback() {
     super.connectedCallback();
     this._flag = false;
-    this.set('_flagName', 'Analytics');
     if(this.auto){
     this._getWorkFlowInstance();
     }
+    this.shadowRoot.querySelector('[field-id=switch]').set('value','pending');
   }
   checkCompletedProcess(workflowInst){
     var instanceArray = [];
