@@ -84,8 +84,14 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       margin-top: 18px;
       padding: 0px 5px;
     }
+    .error {
+      padding: 15px;
+      font-size: 25px;
+      font-weight: bold;
+    }
     </style>
     <div id="oedashboard">
+    <template is="dom-if" if=[[workflowDefName.length]]>
     <div class="center horizontal justified layout fullsize">
     <oe-control-switcher field-id="switch" id="switch" config='{"onLabel": "Running and Failed Workflow","onValue": "pending","offLabel": "Completed Workflow","offValue": "complete"}' on-oe-field-changed="_changeVal"></oe-control-switcher>
     <div class="center horizontal justified layout">
@@ -151,6 +157,10 @@ class oeWorkflowDashboard extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         </template>
       </paper-listbox>
       </div>
+      </template>
+      <template is="dom-if" if=[[!workflowDefName.length]]>
+      <label class="error">No Worflow Definitions are deployed</label>
+      </template>
     </div>`;
   }
   static get is() {
