@@ -1,10 +1,10 @@
 # \<oe-workflow-ui-components\>
 
 
-`<oe-workflow-element` workflow instances for each workflow is listed and Allow visualizing deployed workflow definitions with Current running process-instances and their progress.
+`<oe-workflow-dashboard` workflow instances for each workflow is listed and Allow visualizing deployed workflow definitions with Current running process-instances and their progress.
 
 ```html
-<oe-workflow-element></oe-workflow-element>
+<oe-workflow-dashboard></oe-workflow-dashboard>
 ```
 
 `<oe-workflow-manager>` Allow visualizing workflow mappings to the models.The workflow manager will be displayed in the table for using `<oe-data-table>` component.
