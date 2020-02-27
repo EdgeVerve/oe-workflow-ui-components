@@ -91,6 +91,7 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     }
     </style>
     <div id="oedashboard">
+    <template is="dom-if" if=[[workflowDefName.length]]>
     <div class="center horizontal justified layout fullsize">
       <label class="type">{{_flagName}}</label>
     <div class="center horizontal justified layout">
@@ -156,6 +157,10 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         </template>
       </paper-listbox>
       </div>
+      </template>
+      <template is="dom-if" if=[[!workflowDefName.length]]>
+      <label class="type">No Worflow Definitions are deployed</label>
+      </template>
     </div>`;
   }
   static get is() {
