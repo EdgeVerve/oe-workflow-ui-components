@@ -64,30 +64,15 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         width: 100%;
         height: 100%;
       }
-      #reassign {
-        height: 40px;
-        margin-left: 45px;
-      }
-      #cancel{
-        height: 40px;
-        margin-left: 25px;
-      }
-     #modal {
-       width: 400px;
-     }
-     .combo {
-       width: 300px;
-       margin: 20px;
-     }
     </style>
     <div class="layout horizontal flex fullsize">
-      <paper-dialog id="modal" modal>
-      <div class="combo">
-      <oe-combo label="User" id="user" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
-      <oe-combo label="User Role" id="role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
+      <paper-dialog id="modal" modal style="width: 400px;">
+      <div class="combo" style=" width: 300px;margin: 20px;">
+      <oe-combo allow-free-text label="User" id="user" listdata={{userList}} displayproperty="userName" valueproperty="userName"></oe-combo>
+      <oe-combo allow-free-text label="User Role" id="role" listdata={{roleList}} displayproperty="roleName" valueproperty="roleName"></oe-combo>
       </div>
-      <paper-button raised id="reassign" on-tap="_submit" dialog-confirm><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
-      <paper-button raised id="cancel" dialog-confirm><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
+      <paper-button raised id="reassign" on-tap="_submit" dialog-confirm style="height: 40px;margin-left: 45px;"><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
+      <paper-button raised id="cancel" dialog-confirm style="height: 40px;margin-left: 25px;"><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
       </paper-dialog>
       <div class="fullsize" id="canvas" on-track="_handleTrack"></div>
       <div id="sidepanel"></div>
@@ -214,9 +199,10 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
     });
     self.addEventListener('reassign-task',function(event){
       self.set('processTokenId',event.detail);
+      var body = document.querySelector('body');
+      body.appendChild(self.$.modal);
       self.$.modal.open();
     });
-   
   }
  
   _submit(e){
