@@ -148,6 +148,7 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
               </template>
               <template is="dom-if" if="[[_checkTask(processToken)]]">
               <paper-button raised id="taskButton" on-tap="_reassignTask">Reassign Task</paper-button>
+              <paper-button raised id="taskButton" on-tap="_gotoCompleteTask">Complete Task</paper-button>
               </template>
               <template is="dom-if" if="[[_hasFailed(processToken)]]">
               <paper-button raised on-tap="_rerun"><oe-i18n-msg msgid="retry-wf-step">Retry</oe-i18n-msg></paper-button>
@@ -172,6 +173,9 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
   }
   _reassignTask(e){
     this.fire('reassign-task',this.processToken.id);
+  }
+  _gotoCompleteTask(e) {
+    this.fire('complete-task',this.processToken);
   }
   _showError(processToken){
     if(processToken.status === 'failed' && processToken.error){

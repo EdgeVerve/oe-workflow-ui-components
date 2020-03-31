@@ -6,9 +6,14 @@ import './oe-processtoken-panel.js';
 import "@polymer/iron-icon/iron-icon.js";
 import '@polymer/paper-dialog/paper-dialog.js';
 import "@polymer/iron-icons/iron-icons.js";
+import 'oe-input/oe-textarea';
+import 'oe-input/oe-json-input';
 import "oe-combo/oe-combo.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
+import {
+  OEAjaxMixin
+} from 'oe-mixins/oe-ajax-mixin.js';
 import { OECommonMixin } from 'oe-mixins/oe-common-mixin.js';
 import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
 
@@ -23,7 +28,7 @@ import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-l
  * @demo demo/demo-oe-bpmn-viewer.html
  * 
  */
-class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) {
+class oeBpmnViewer extends GestureEventListeners(OECommonMixin(OEAjaxMixin(PolymerElement))) {
   static get template() {
     return html`
     <style include="iron-flex">
@@ -74,6 +79,21 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       <paper-button raised id="reassign" on-tap="_submit" dialog-confirm style="height: 40px;margin-left: 45px;"><oe-i18n-msg msgid="submit-wf-step">OK</oe-i18n-msg></paper-button>
       <paper-button raised id="cancel" dialog-confirm style="height: 40px;margin-left: 25px;"><oe-i18n-msg msgid="cancel-wf-step">Cancel</oe-i18n-msg></paper-button>
       </paper-dialog>
+      <paper-dialog id="approval" modal style="width: 500px;">
+      <div page="task" class="page-content">
+      <h2>Approver</h2>
+      <div class="flex">
+        <oe-combo label="Action" value={{taskPayload.__action__}} listdata=[[__taskActionListData]]></oe-combo>
+        <oe-textarea label="Comments" value={{taskPayload.__comments__}} max-rows="3"></oe-textarea>
+        <oe-json-input label="Message" value={{taskPayload.msg}} max-rows="4" invalid={{isTaskMessageInvalid}}></oe-json-input>
+        <oe-json-input label="Process Variables" value={{taskPayload.pv}} max-rows="4" invalid={{isTaskPayloadInvalid}}></oe-json-input>
+      </div>
+      <div class="buttons-container">
+          <paper-button primary on-tap="__completeActiveTask" dialog-confirm disabled=[[__or(isTaskPayloadInvalid,isTaskMessageInvalid)]]>Complete</paper-button>
+          <paper-button primary dialog-dismiss>Cancel</paper-button>
+      </div>
+    </div>
+      </paper-dialog>
       <div class="fullsize" id="canvas" on-track="_handleTrack"></div>
       <div id="sidepanel"></div>
     </div>`;
@@ -111,6 +131,9 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
         type: Array
       },
       processTokenId:{
+        type: String
+      },
+      taskId :{
         type: String
       }
     };
@@ -203,8 +226,46 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       body.appendChild(self.$.modal);
       self.$.modal.open();
     });
+    self.addEventListener('complete-task',function(event){
+      self.set('processTokenId',event.detail.id);
+      self.set('taskId',event.detail.taskId);
+      self.set('taskPayload', {
+        msg: {},
+        pv: {}
+      });
+      var body = document.querySelector('body');
+      body.appendChild(self.$.approval);
+      self.$.approval.open();
+    });
+    self.set('__taskActionListData', [
+      'accept', 'reject'
+    ]);
   }
- 
+  __or(bool1, bool2) {
+    return bool1 || bool2;
+  }
+  __completeActiveTask() {
+    var self = this;
+    this.__completeTask(this.taskId, this.taskPayload, function (err, resp) {
+      if (err) {
+        self.fire('oe-show-error', err.detail.request.response.error.message);
+        return;
+      }
+      self.$.approval.close()
+      self.fire('refresh',self.processInstance.id);
+    });
+  }
+
+  __completeTask(taskId, payload, cb) {
+    let url = this.__getApiUrl(`/Tasks/${taskId}/complete`);
+    this.makeAjaxCall(url, 'put', payload, null, null, null, function (err, resp) {
+      if (err) {
+        cb(err, null);
+        return;
+      }
+      cb(null, resp);
+    });
+  }
   _submit(e){
     var self = this;
     var obj ={};
@@ -293,7 +354,10 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(PolymerElement)) 
       }
     }
   }
-
+  __getApiUrl(url) {
+    var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+    return restApiRoot + url;
+  }
   zoom(level) {
     var self = this;
     var canvas = self.viewer.get('canvas');
