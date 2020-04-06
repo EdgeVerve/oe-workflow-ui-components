@@ -172,7 +172,10 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
     };
   }
   _reassignTask(e){
-    this.fire('reassign-task',this.processToken.id);
+    this.fire('reassign-task',{
+      id: this.processToken.id,
+      processInstanceId: this.processInstanceId
+    });
   }
   _gotoCompleteTask(e) {
     this.fire('complete-task',this.processToken);

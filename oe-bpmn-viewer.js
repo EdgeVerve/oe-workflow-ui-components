@@ -221,7 +221,8 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(OEAjaxMixin(Polym
       }
     });
     self.addEventListener('reassign-task',function(event){
-      self.set('processTokenId',event.detail);
+      //self.fire('reassign-task-clicked',event.detail);
+      self.set('processTokenId',event.detail.id);
       var body = document.querySelector('body');
       body.appendChild(self.$.modal);
       self.$.modal.open();
