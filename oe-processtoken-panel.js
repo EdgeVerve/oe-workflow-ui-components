@@ -148,6 +148,7 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
               </template>
               <template is="dom-if" if="[[_checkTask(processToken)]]">
               <paper-button raised id="taskButton" on-tap="_reassignTask">Reassign Task</paper-button>
+              <paper-button raised id="taskButton" on-tap="_gotoCompleteTask">Complete Task</paper-button>
               </template>
               <template is="dom-if" if="[[_hasFailed(processToken)]]">
               <paper-button raised on-tap="_rerun"><oe-i18n-msg msgid="retry-wf-step">Retry</oe-i18n-msg></paper-button>
@@ -171,7 +172,13 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
     };
   }
   _reassignTask(e){
-    this.fire('reassign-task',this.processToken.id);
+    this.fire('reassign-task',{
+      id: this.processToken.id,
+      processInstanceId: this.processInstanceId
+    });
+  }
+  _gotoCompleteTask(e) {
+    this.fire('complete-task',this.processToken);
   }
   _showError(processToken){
     if(processToken.status === 'failed' && processToken.error){
@@ -221,7 +228,7 @@ class oeProcesstokenPanel extends OECommonMixin(PolymerElement) {
     var self = this;
     var processToken = this.processToken;
     if (processToken && processToken.status === 'failed') {
-      self.fire('open-json-editor', {
+      self.fire('oe-workflow-rerun', {
         processInstanceId: self.processInstanceId,
         processToken: self.processToken,
       });
