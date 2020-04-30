@@ -1,7 +1,7 @@
 {
   "name": "oe-workflow-ui-components",
   "description": "A element used to display workflow-manager details",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "dependencies": {
     "@polymer/iron-collapse": "^3.0.1",
     "@polymer/iron-form": "^3.0.1",
