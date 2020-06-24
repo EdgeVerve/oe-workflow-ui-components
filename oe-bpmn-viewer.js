@@ -239,7 +239,7 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(OEAjaxMixin(Polym
       self.$.approval.open();
     });
     self.set('__taskActionListData', [
-      'accepted', 'rejected'
+      'approved', 'rejected'
     ]);
   }
   __or(bool1, bool2) {
