@@ -83,7 +83,7 @@ class oeBpmnViewer extends GestureEventListeners(OECommonMixin(OEAjaxMixin(Polym
       <div page="task" class="page-content">
       <h2>Approver</h2>
       <div class="flex">
-        <oe-combo label="Action" value={{taskPayload.__action__}} listdata=[[__taskActionListData]]></oe-combo>
+        <oe-combo allow-free-text label="Action" value={{taskPayload.__action__}} listdata=[[__taskActionListData]]></oe-combo>
         <oe-textarea label="Comments" value={{taskPayload.__comments__}} max-rows="3"></oe-textarea>
         <oe-json-input label="Message" value={{taskPayload.msg}} max-rows="4" invalid={{isTaskMessageInvalid}}></oe-json-input>
         <oe-json-input label="Process Variables" value={{taskPayload.pv}} max-rows="4" invalid={{isTaskPayloadInvalid}}></oe-json-input>
