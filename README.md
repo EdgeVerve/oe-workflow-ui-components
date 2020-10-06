@@ -1,7 +1,7 @@
 # \<oe-workflow-ui-components\>
 
 
-`<oe-workflow-dashboard>` workflow instances for each workflow is listed and Allow visualizing deployed workflow definitions with Current running process-instances and their progress.
+`<oe-workflow-dashboard` workflow instances for each workflow is listed and Allow visualizing deployed workflow definitions with Current running process-instances and their progress.
 
 ```html
 <oe-workflow-dashboard></oe-workflow-dashboard>
